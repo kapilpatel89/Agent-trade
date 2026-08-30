@@ -43,6 +43,26 @@ DYNAMIC_SCANNER_ENABLED = True
 SCANNER_MIN_24H_VOLUME_INR = 25000.0  # Filter out illiquid markets (min ₹25K 24h volume)
 SCANNER_MAX_CANDIDATES = 12           # Top N high-momentum candidate pairs evaluated per cycle
 
+# CoinDCX Official Fee Schedule & Indian Crypto Tax Rules (https://coindcx.com/fees/0 and /fees/1)
+COINDCX_SPOT_MAKER_FEE = 0.002        # 0.20% Spot Maker Fee
+COINDCX_SPOT_TAKER_FEE = 0.002        # 0.20% Spot Taker Fee
+COINDCX_GST_ON_FEE = 0.18             # 18% GST applied on platform trading fees
+COINDCX_EFFECTIVE_FEE = 0.00236       # 0.20% * (1 + 0.18) = 0.236% total trading fee per order
+COINDCX_TDS_ON_SELL = 0.01            # 1.0% Indian Govt TDS on gross crypto sell orders (Section 194S)
+COINDCX_INR_WITHDRAWAL_FEE = 0.0      # INR Bank Withdrawals are FREE (Min withdrawal ₹100)
+COINDCX_MIN_INR_WITHDRAWAL = 100.0    # Min INR withdrawal amount
+
+# Crypto Network Withdrawal Fees (https://coindcx.com/fees/1)
+COINDCX_CRYPTO_WITHDRAWAL_FEES = {
+    "BTC": 0.0005,
+    "ETH": 0.003,
+    "SOL": 0.01,
+    "XRP": 0.25,
+    "DOGE": 5.0,
+    "ADA": 1.0,
+    "USDT": 1.0,
+}
+
 # Default Risk Management & Profit Compounding
 DEFAULT_MAX_RISK_PER_TRADE = 0.15  # Max 15% of current equity per trade (dynamic compounding)
 DEFAULT_MIN_ORDER_INR = 100.0      # Minimum CoinDCX order notional is ₹100 INR
@@ -50,6 +70,7 @@ DEFAULT_STOP_LOSS_PCT = 0.02       # 2.0% Stop Loss
 DEFAULT_TAKE_PROFIT_1_PCT = 0.04   # 4.0% TP1 (1:2 RR)
 DEFAULT_TAKE_PROFIT_2_PCT = 0.08   # 8.0% TP2 (1:4 RR)
 DEFAULT_TRAILING_STOP_PCT = 0.015  # 1.5% Trailing Stop
+
 
 # Base Tracked CoinDCX INR Trading Pairs (Major anchors)
 BASE_TRACKED_PAIRS = [

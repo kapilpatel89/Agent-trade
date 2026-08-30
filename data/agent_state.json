@@ -1,7 +1,7 @@
 {
   "inr_cash": 712.5,
   "initial_capital": 1000.0,
-  "peak_equity": 1006.27,
+  "peak_equity": 1008.19,
   "trading_mode": "paper",
   "open_positions": [
     {
@@ -14,16 +14,16 @@
       "entry_price": 247900.0,
       "cost_inr": 148.74,
       "fees_inr": 0.3,
-      "current_price": 251777.9,
-      "current_value_inr": 151.07,
-      "unrealized_pnl_inr": 2.33,
-      "unrealized_pnl_pct": 1.56,
-      "highest_price_seen": 252950.0,
+      "current_price": 253174.6,
+      "current_value_inr": 151.9,
+      "unrealized_pnl_inr": 3.16,
+      "unrealized_pnl_pct": 2.13,
+      "highest_price_seen": 253974.6,
       "stop_loss_price": 244925.2,
-      "trailing_stop_price": 249155.75,
+      "trailing_stop_price": 250164.98,
       "take_profit_1": 253849.6,
       "take_profit_2": 258311.8,
-      "tp1_reached": false,
+      "tp1_reached": true,
       "opened_at": "2026-08-30 19:26:17",
       "thesis": "Trend-following entry: Price structured above EMA 9/21 with positive MACD momentum and Hammer (Bullish Reversal), Bullish Engulfing (Strong Buy) confirmation."
     },
@@ -37,13 +37,13 @@
       "entry_price": 140.999,
       "cost_inr": 141.0,
       "fees_inr": 0.28,
-      "current_price": 141.383,
-      "current_value_inr": 141.38,
-      "unrealized_pnl_inr": 0.38,
-      "unrealized_pnl_pct": 0.27,
-      "highest_price_seen": 142.129,
+      "current_price": 142.835,
+      "current_value_inr": 142.84,
+      "unrealized_pnl_inr": 1.84,
+      "unrealized_pnl_pct": 1.3,
+      "highest_price_seen": 143.353,
       "stop_loss_price": 139.31,
-      "trailing_stop_price": 140.0,
+      "trailing_stop_price": 141.2,
       "take_profit_1": 144.38,
       "take_profit_2": 146.92,
       "tp1_reached": false,
@@ -51,5 +51,5 @@
       "thesis": "Momentum breakout continuation: Bullish MACD expansion with 0.7x volume surge confirming buyers absorbing resistance."
     }
   ],
-  "updated_at": "2026-08-30 22:10:11"
+  "updated_at": "2026-08-30 22:35:25"
 }

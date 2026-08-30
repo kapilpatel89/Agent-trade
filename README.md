@@ -147,6 +147,26 @@ Monitors account health ($\text{HP}\%$) and peak-to-trough drawdown to dynamical
 
 ---
 
+## 🧾 CoinDCX Official Fee Schedule & Tax Compliance
+
+The agent is fully configured with CoinDCX's official fee rules ([Trading Fees](https://coindcx.com/fees/0) & [Withdrawal Fees](https://coindcx.com/fees/1)) and Indian Crypto Tax legislation:
+
+| Fee / Tax Component | Rate | Application |
+|---|---|---|
+| **Spot Maker Fee** | **0.20%** | Charged on limit maker order fills. |
+| **Spot Taker Fee** | **0.20%** | Charged on market taker orders. |
+| **GST on Platform Fees** | **18.0%** | Applied on trading fees ($0.20\% \times 1.18 = \mathbf{0.236\%}$ total trading friction). |
+| **TDS on Sell Orders (Sec 194S)** | **1.0%** | Automatically deducted at source on all crypto sales. |
+| **INR Bank Withdrawal Fee** | **₹0.00 (FREE)** | Zero fee for IMPS/NEFT withdrawals (Min: ₹100). |
+| **Crypto Withdrawal Network Fee** | **Per Asset** | Dynamic network fee (e.g. BTC: 0.0005, ETH: 0.003, SOL: 0.01, XRP: 0.25). |
+
+### 💡 Net PnL Calculation Formula:
+$$\text{Net Realized PnL} = \text{Gross Proceeds} - \text{Total Buy Fee (0.236\%)} - \text{Total Sell Fee (0.236\%)} - \text{1\% TDS} - \text{Initial Principal}$$
+All PnL numbers shown in the dashboard and Telegram alerts reflect **100% true net returns** after all platform fees and taxes.
+
+---
+
+
 ## 🔌 Connecting to MCP (Model Context Protocol)
 
 NEXUS includes a built-in **Model Context Protocol (MCP) server** (`mcp_server.py`) using JSON-RPC 2.0 over `stdio`. This allows AI assistants (Claude Desktop, Antigravity IDE, Cursor, or Gemini) to query live market data and control the trading agent directly.

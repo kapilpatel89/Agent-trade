@@ -146,8 +146,12 @@ class TradingEngine:
 
         qty = alloc["quantity"]
         cost_inr = alloc["allocated_inr"]
-        fee_inr = round(cost_inr * 0.002, 2)  # 0.2% CoinDCX Fee
-        total_spent = cost_inr + fee_inr
+        
+        # CoinDCX Official Spot Fee Structure: 0.20% Trading Fee + 18% GST on Fee = 0.236% Total Buy Fee
+        trading_fee_inr = round(cost_inr * config.COINDCX_SPOT_TAKER_FEE, 2)
+        gst_on_fee_inr = round(trading_fee_inr * config.COINDCX_GST_ON_FEE, 2)
+        total_buy_fee_inr = round(trading_fee_inr + gst_on_fee_inr, 2)
+        total_spent = cost_inr + total_buy_fee_inr
 
         if self.trading_mode == "paper":
             # Paper execution
@@ -162,7 +166,12 @@ class TradingEngine:
                 "quantity": qty,
                 "entry_price": price,
                 "cost_inr": cost_inr,
-                "fees_inr": fee_inr,
+                "fees_inr": total_buy_fee_inr,
+                "buy_fee_breakdown": {
+                    "trading_fee": trading_fee_inr,
+                    "gst_18pct": gst_on_fee_inr,
+                    "total": total_buy_fee_inr
+                },
                 "current_price": price,
                 "current_value_inr": cost_inr,
                 "unrealized_pnl_inr": 0.0,
@@ -182,7 +191,7 @@ class TradingEngine:
             self.brain.log_thought(
                 category="EXECUTION",
                 title=f"🚀 PAPER BUY Executed: {qty} {symbol} @ ₹{price}",
-                details=f"Cost: ₹{cost_inr:.2f} + Fee ₹{fee_inr:.2f} (Total: ₹{total_spent:.2f}). Initial Stop: ₹{decision['stop_loss_price']} | TP1: ₹{decision['take_profit_1']}.",
+                details=f"Principal: ₹{cost_inr:.2f} | CoinDCX Fee: ₹{trading_fee_inr:.2f} + 18% GST: ₹{gst_on_fee_inr:.2f} (Total Fee: ₹{total_buy_fee_inr:.2f}). Initial Stop: ₹{decision['stop_loss_price']} | TP1: ₹{decision['take_profit_1']}.",
                 level="success",
                 pair=pair
             )
@@ -225,14 +234,35 @@ class TradingEngine:
             return True
 
     def execute_sell(self, position: Dict[str, Any], exit_price: float, reason: str) -> bool:
-        """Execute sell order / close position in paper or live mode."""
+        """
+        Execute sell order / close position with exact CoinDCX Fee & Indian Govt TDS rules:
+        - 0.20% Spot Taker Fee
+        - 18% GST on trading fee (Total fee: 0.236%)
+        - 1.0% Indian Govt TDS on gross crypto sell value (Section 194S)
+        """
         qty = position["quantity"]
         symbol = position["symbol"]
         cost_inr = position["cost_inr"]
+        buy_fee_inr = position.get("fees_inr", 0.0)
+
+        # Gross sell proceeds
         gross_return = round(qty * exit_price, 2)
-        fee_inr = round(gross_return * 0.002, 2)
-        tds_inr = round(gross_return * 0.01, 2) if gross_return > cost_inr else 0.0  # 1% TDS on profit
-        net_return = gross_return - fee_inr - tds_inr
+
+        # 1. CoinDCX Sell Trading Fee (0.20%) + 18% GST
+        sell_trading_fee = round(gross_return * config.COINDCX_SPOT_TAKER_FEE, 2)
+        sell_gst_fee = round(sell_trading_fee * config.COINDCX_GST_ON_FEE, 2)
+        total_sell_fee = round(sell_trading_fee + sell_gst_fee, 2)
+
+        # 2. Indian Government 1% TDS on Gross Sale Value (Section 194S)
+        tds_1pct = round(gross_return * config.COINDCX_TDS_ON_SELL, 2)
+
+        # Net cash returned to wallet after exchange fee and tax deduction
+        net_return = round(gross_return - total_sell_fee - tds_1pct, 2)
+
+        # Total cumulative fees & TDS paid on this complete round-trip trade
+        cumulative_fees_and_tax = round(buy_fee_inr + total_sell_fee + tds_1pct, 2)
+
+        # Net PnL = Net cash returned - initial cost
         net_pnl = round(net_return - cost_inr, 2)
         net_pnl_pct = round((net_pnl / cost_inr) * 100.0, 2)
 
@@ -247,10 +277,17 @@ class TradingEngine:
                 "entry_price": position["entry_price"],
                 "exit_price": exit_price,
                 "cost_inr": cost_inr,
+                "gross_return_inr": gross_return,
                 "net_return_inr": net_return,
                 "net_pnl_inr": net_pnl,
                 "net_pnl_pct": net_pnl_pct,
-                "fees_inr": round(position.get("fees_inr", 0) + fee_inr + tds_inr, 2),
+                "fees_inr": cumulative_fees_and_tax,
+                "fee_breakdown": {
+                    "buy_fee_with_gst": buy_fee_inr,
+                    "sell_fee_with_gst": total_sell_fee,
+                    "tds_1pct_deducted": tds_1pct,
+                    "total_friction": cumulative_fees_and_tax
+                },
                 "opened_at": position["opened_at"],
                 "closed_at": time.strftime("%Y-%m-%d %H:%M:%S"),
                 "exit_reason": reason,
@@ -263,8 +300,8 @@ class TradingEngine:
             level = "success" if net_pnl >= 0 else "danger"
             self.brain.log_thought(
                 category="EXECUTION",
-                title=f"💰 CLOSED {symbol} ({reason}) | PnL: ₹{net_pnl:+.2f} ({net_pnl_pct:+.2f}%)",
-                details=f"Entry: ₹{position['entry_price']} -> Exit: ₹{exit_price}. Net Returned: ₹{net_return:.2f} (Fees/TDS: ₹{fee_inr+tds_inr:.2f}). Cash Balance: ₹{self.inr_cash:.2f}.",
+                title=f"💰 CLOSED {symbol} ({reason}) | Net PnL: ₹{net_pnl:+.2f} ({net_pnl_pct:+.2f}%)",
+                details=f"Gross: ₹{gross_return:.2f} -> Net: ₹{net_return:.2f} (CoinDCX Fee+GST: ₹{total_sell_fee:.2f}, 1% TDS: ₹{tds_1pct:.2f}). Cash: ₹{self.inr_cash:.2f}.",
                 level=level,
                 pair=position["pair"]
             )
@@ -273,6 +310,7 @@ class TradingEngine:
             self.telegram.send_sell_alert(trade_record, self.get_total_equity(), self.trading_mode)
             return True
         else:
+
             # Live Order Execution
             res = self.coindcx.create_order(
                 market=position["market"],
@@ -305,10 +343,17 @@ class TradingEngine:
             entry_price = pos["entry_price"]
             qty = pos["quantity"]
             pos["current_price"] = current_price
-            current_val = round(qty * current_price, 2)
-            pos["current_value_inr"] = current_val
-            pos["unrealized_pnl_inr"] = round(current_val - pos["cost_inr"], 2)
-            pos["unrealized_pnl_pct"] = round(((current_price - entry_price) / entry_price) * 100.0, 2)
+            gross_val = round(qty * current_price, 2)
+            
+            # Net estimated valuation after 0.236% CoinDCX exit fee & 1.0% TDS
+            exit_friction = round(gross_val * (config.COINDCX_EFFECTIVE_FEE + config.COINDCX_TDS_ON_SELL), 2)
+            net_estimated_val = round(gross_val - exit_friction, 2)
+            
+            pos["current_value_inr"] = gross_val
+            pos["net_estimated_value_inr"] = net_estimated_val
+            pos["unrealized_pnl_inr"] = round(net_estimated_val - pos["cost_inr"], 2)
+            pos["unrealized_pnl_pct"] = round(((net_estimated_val - pos["cost_inr"]) / pos["cost_inr"]) * 100.0, 2)
+
 
             # Update high water mark for trailing stop
             if current_price > pos.get("highest_price_seen", entry_price):
