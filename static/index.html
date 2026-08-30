@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXUS — Crypto Survival Agent | CoinDCX Autonomous AI</title>
+  <meta name="description" content="Autonomous AI crypto trading survival agent. CoinDCX live scanner, real-time technical analysis, quantitative AI brain.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="app-container">
+
+    <!-- HEADER -->
+    <header class="top-nav">
+      <div class="brand-section">
+        <div class="logo-icon">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <polygon points="14,2 26,8 26,20 14,26 2,20 2,8" stroke="#00f59b" stroke-width="1.5" fill="none"/>
+            <polygon points="14,7 21,11 21,17 14,21 7,17 7,11" fill="rgba(0,245,155,0.15)" stroke="#00f59b" stroke-width="1"/>
+            <circle cx="14" cy="14" r="3" fill="#00f59b"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>NEXUS <span class="accent-text">AI AGENT</span></h1>
+          <span class="subtext">CoinDCX Survival Intelligence</span>
+        </div>
+      </div>
+
+      <div class="header-status-row">
+        <div class="status-pill" id="agent-status-pill">
+          <span class="pulse-ring"></span>
+          <span class="pulse-dot" id="system-status-dot"></span>
+          <span id="system-status-text">AGENT ACTIVE</span>
+        </div>
+        <div class="mode-pill" id="trading-mode-badge">
+          <span class="mode-icon">🧪</span>
+          <span id="trading-mode-text">PAPER ₹1,000</span>
+        </div>
+        <div class="info-pill tele-pill" id="telegram-status-badge">
+          <span>🤖</span><span>@antigravitycode_bot</span>
+        </div>
+        <div class="info-pill ai-pill" id="ai-brain-badge">
+          <span id="ai-brain-badge-text">🧠 QUANT AI</span>
+        </div>
+        <div class="scan-ticker" id="scan-ticker-bar">
+          <span id="scan-ticker-text">⏳ Initializing scanner...</span>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <button id="btn-run-cycle" class="btn btn-secondary">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 12a5 5 0 110-10A5 5 0 018 13zM7 5v4l3 1.5-.5 1L6 9V5h1z"/></svg>
+          Run Cycle
+        </button>
+        <button id="btn-toggle-loop" class="btn btn-primary">
+          <span id="loop-icon">⏸</span> <span id="loop-btn-text">Pause</span>
+        </button>
+        <button id="btn-settings" class="btn btn-outline">⚙ Config</button>
+        <button id="btn-emergency-liquidate" class="btn btn-danger">🚨 Liquidate</button>
+      </div>
+    </header>
+
+    <!-- HUD CARDS -->
+    <section class="hud-grid">
+      <!-- Card 1: Equity -->
+      <div class="hud-card glass-card">
+        <div class="hud-card-label">TOTAL EQUITY</div>
+        <div class="hud-card-value" id="hud-total-equity">₹1,000.00</div>
+        <div class="hud-card-row">
+          <div class="hud-metric">
+            <span class="hm-label">Cash</span>
+            <span class="hm-val" id="hud-inr-cash">₹1,000.00</span>
+          </div>
+          <div class="hud-metric">
+            <span class="hm-label">Net PnL</span>
+            <span class="hm-val positive" id="hud-net-pnl">+₹0.00</span>
+          </div>
+        </div>
+        <div class="hud-card-sub">
+          Peak: <strong id="hud-peak-equity">₹1,000</strong>&nbsp;&nbsp;
+          Drawdown: <strong id="hud-drawdown">0.0%</strong>
+        </div>
+      </div>
+
+      <!-- Card 2: Health -->
+      <div class="hud-card glass-card">
+        <div class="hud-card-label">CAPITAL HEALTH</div>
+        <div class="hud-health-wrapper">
+          <div class="hud-card-value" id="hud-health-pct">100%</div>
+          <div class="health-bar-track">
+            <div class="health-bar-fill" id="hud-health-bar" style="width:100%"></div>
+          </div>
+        </div>
+        <div class="hud-card-row">
+          <div class="hud-metric">
+            <span class="hm-label">Runway</span>
+            <span class="hm-val text-success" id="hud-runway">OPTIMAL</span>
+          </div>
+          <div class="hud-metric">
+            <span class="hm-label">Win Rate</span>
+            <span class="hm-val" id="hud-win-rate">0.0%</span>
+          </div>
+        </div>
+        <div class="hud-card-sub">
+          Trades: <strong id="hud-total-trades">0</strong>&nbsp;&nbsp;
+          Fees: <strong id="hud-total-fees">₹0.00</strong>
+        </div>
+      </div>
+
+      <!-- Card 3: Stance -->
+      <div class="hud-card glass-card">
+        <div class="hud-card-label">SURVIVAL STANCE</div>
+        <div class="stance-badge-large stance-prudent" id="hud-stance-badge">PRUDENT 🎯</div>
+        <p class="stance-desc" id="hud-stance-desc">Balanced compounding mode active.</p>
+        <div class="hud-card-row">
+          <div class="hud-metric">
+            <span class="hm-label">Risk/Trade</span>
+            <span class="hm-val" id="hud-risk-pct">15%</span>
+          </div>
+          <div class="hud-metric">
+            <span class="hm-label">Positions</span>
+            <span class="hm-val" id="hud-positions-limit">0/2</span>
+          </div>
+        </div>
+        <div class="hud-card-sub">
+          Trailing Stop: <strong id="hud-trailing-stop">1.5%</strong>&nbsp;&nbsp;
+          Hard SL: <strong id="hud-stop-loss">2.0%</strong>
+        </div>
+      </div>
+
+      <!-- Card 4: Macro -->
+      <div class="hud-card glass-card">
+        <div class="hud-card-label">MACRO RADAR</div>
+        <div class="threat-display">
+          <span class="threat-badge threat-low" id="hud-threat-badge">STABLE</span>
+          <span class="threat-level-num" id="hud-threat-level">0/100</span>
+        </div>
+        <div class="threat-bar-track">
+          <div class="threat-bar-fill" id="hud-threat-fill" style="width:0%"></div>
+        </div>
+        <div class="hud-card-row">
+          <div class="hud-metric">
+            <span class="hm-label">Sentiment</span>
+            <span class="hm-val text-accent" id="hud-crypto-sentiment">NEUTRAL</span>
+          </div>
+          <div class="hud-metric">
+            <span class="hm-label">Alerts</span>
+            <span class="hm-val" id="hud-alerts-count">0</span>
+          </div>
+        </div>
+        <div class="hud-card-sub" id="hud-sources-count">Sources: Fetching...</div>
+      </div>
+    </section>
+
+    <!-- MAIN GRID -->
+    <main class="main-grid">
+
+      <!-- LEFT COL: Chart + Indicators -->
+      <section class="left-column">
+
+        <!-- Chart Card -->
+        <div class="chart-card glass-card">
+          <div class="chart-top-bar">
+            <div class="pair-selector" id="pair-buttons-container"></div>
+            <div class="pair-price-block">
+              <span class="pair-symbol" id="chart-symbol">BTC/INR</span>
+              <span class="pair-price" id="chart-price">₹--</span>
+              <span class="pair-change" id="chart-change">+0.00%</span>
+            </div>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="trading-chart"></canvas>
+          </div>
+        </div>
+
+        <!-- Indicators Card -->
+        <div class="indicators-card glass-card">
+          <div class="card-title-bar">
+            <h3>📈 TECHNICAL INDICATORS</h3>
+            <span class="signal-tag" id="tech-overall-signal">HOLD</span>
+          </div>
+          <div class="indicator-grid">
+            <div class="ind-box">
+              <span class="ind-name">RSI (14)</span>
+              <span class="ind-val" id="ind-rsi">--</span>
+              <span class="ind-sub" id="ind-rsi-status">Neutral Zone</span>
+            </div>
+            <div class="ind-box">
+              <span class="ind-name">MACD Hist</span>
+              <span class="ind-val" id="ind-macd">--</span>
+              <span class="ind-sub" id="ind-macd-status">Histogram</span>
+            </div>
+            <div class="ind-box">
+              <span class="ind-name">EMA 9 / 21</span>
+              <span class="ind-val" id="ind-ema">--</span>
+              <span class="ind-sub" id="ind-ema-status">Trend</span>
+            </div>
+            <div class="ind-box">
+              <span class="ind-name">Bollinger</span>
+              <span class="ind-val" id="ind-bb">--</span>
+              <span class="ind-sub" id="ind-bb-status">Band Width</span>
+            </div>
+            <div class="ind-box">
+              <span class="ind-name">ATR</span>
+              <span class="ind-val" id="ind-atr">--</span>
+              <span class="ind-sub" id="ind-atr-status">Volatility</span>
+            </div>
+            <div class="ind-box">
+              <span class="ind-name">Vol Surge</span>
+              <span class="ind-val" id="ind-vol">--</span>
+              <span class="ind-sub" id="ind-vol-status">vs SMA20</span>
+            </div>
+          </div>
+          <div class="signal-breakdown" id="signal-breakdown">
+            <div class="bd-label">Signal Breakdown</div>
+            <ul id="breakdown-list"><li>Awaiting cycle...</li></ul>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- RIGHT COL: Thought Stream + Movers (stacked) -->
+      <section class="right-column">
+
+        <!-- Thought Stream -->
+        <div class="thought-card glass-card">
+          <div class="card-title-bar">
+            <div class="brain-title-group">
+              <span class="brain-icon-lg">🧠</span>
+              <h3>AGENT THOUGHT STREAM</h3>
+            </div>
+            <div class="filter-tabs">
+              <button class="filter-btn active" data-filter="ALL">All</button>
+              <button class="filter-btn" data-filter="DECISION">Decision</button>
+              <button class="filter-btn" data-filter="SCAN">Scan</button>
+              <button class="filter-btn" data-filter="EXECUTION">Execute</button>
+            </div>
+          </div>
+          <div class="thought-feed" id="thought-feed">
+            <div class="thought-item info">
+              <div class="thought-meta">
+                <span class="thought-badge">SYSTEM</span>
+                <span class="thought-time">Booting...</span>
+              </div>
+              <div class="thought-title">Agent Initializing</div>
+              <div class="thought-body">Connecting to CoinDCX feeds. Quantitative brain loading...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Market Movers (compact, inside right column) -->
+        <div class="movers-card glass-card">
+          <div class="card-title-bar">
+            <div class="title-with-badge">
+              <h3>🔥 LIVE SCANNER</h3>
+              <span class="count-pill" id="scanned-total-badge">--</span>
+            </div>
+            <button id="btn-refresh-movers" class="btn btn-xs btn-outline">↺ Rescan</button>
+          </div>
+          <div class="movers-list" id="movers-container">
+            <div class="placeholder-row">Scanning CoinDCX markets...</div>
+          </div>
+        </div>
+
+      </section>
+    </main>
+
+    <!-- LOWER SECTION -->
+    <section class="lower-grid">
+
+      <!-- News Radar -->
+      <div class="news-card glass-card">
+        <div class="card-title-bar">
+          <h3>🌍 MACRO & CRYPTO NEWS</h3>
+          <button id="btn-refresh-news" class="btn btn-xs btn-outline">↺ Refresh</button>
+        </div>
+        <div class="news-list" id="news-feed-container">
+          <div class="placeholder-row">Fetching intelligence feeds...</div>
+        </div>
+      </div>
+
+      <!-- Positions -->
+      <div class="positions-card glass-card">
+        <div class="card-title-bar">
+          <h3>💼 ACTIVE POSITIONS</h3>
+          <span class="count-pill" id="open-positions-count-badge">0 Open</span>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Asset</th><th>Side</th><th>Qty</th>
+                <th>Entry</th><th>Current</th>
+                <th>Stop</th><th>TP1/TP2</th>
+                <th>Unrealized PnL</th><th></th>
+              </tr>
+            </thead>
+            <tbody id="positions-table-body">
+              <tr><td colspan="9" class="empty-row">No active positions. Holding cash in INR.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Trade Journal -->
+      <div class="trades-card glass-card">
+        <div class="card-title-bar">
+          <h3>📜 TRADE JOURNAL</h3>
+          <span class="count-pill" id="trade-history-count-badge">0 Trades</span>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Time</th><th>Asset</th><th>Qty</th>
+                <th>Entry</th><th>Exit</th>
+                <th>Gross</th><th>Fees</th>
+                <th>Net PnL</th><th>Reason</th>
+              </tr>
+            </thead>
+            <tbody id="trades-table-body">
+              <tr><td colspan="9" class="empty-row">No closed trades yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+  </div><!-- end .app-container -->
+
+  <!-- CONFIG MODAL -->
+  <div class="modal-overlay" id="config-modal">
+    <div class="modal-box glass-card">
+      <div class="modal-head">
+        <h2>⚙️ Agent Settings</h2>
+        <button class="modal-close-btn" id="modal-close-btn">✕</button>
+      </div>
+      <div class="modal-body">
+
+        <!-- Trading Mode -->
+        <div class="form-section-label">TRADING MODE</div>
+        <div class="radio-group">
+          <label class="radio-card">
+            <input type="radio" name="trading_mode" value="paper" checked>
+            <div class="radio-content">
+              <strong>🧪 Paper Simulation</strong>
+              <span>Real prices, virtual ₹1,000 bankroll. Zero risk.</span>
+            </div>
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="trading_mode" value="live">
+            <div class="radio-content">
+              <strong>⚡ Live CoinDCX Spot</strong>
+              <span>Real INR orders — API keys required.</span>
+            </div>
+          </label>
+        </div>
+
+        <!-- Capital & Reset -->
+        <div class="form-section-label" style="margin-top:20px;">STARTING CAPITAL</div>
+        <div class="cfg-row">
+          <input type="number" id="cfg-initial-capital" value="1000" min="100" step="50" class="input-field" placeholder="INR Amount">
+          <button id="btn-reset-wallet" class="btn btn-xs btn-outline">↺ Reset ₹1,000</button>
+        </div>
+
+        <!-- CoinDCX Live Keys (shown only in live mode) -->
+        <div id="live-keys-section" style="display:none;">
+          <div class="form-section-label" style="margin-top:20px;">COINDCX API KEYS (LIVE)</div>
+          <input type="password" id="cfg-api-key" placeholder="CoinDCX API Key" class="input-field" style="margin-bottom:8px;">
+          <input type="password" id="cfg-api-secret" placeholder="CoinDCX API Secret" class="input-field">
+        </div>
+
+        <!-- Telegram -->
+        <div class="form-section-label" style="margin-top:20px;">🤖 TELEGRAM ALERTS</div>
+        <input type="hidden" id="cfg-telegram-token" value="8249092590:AAH66Fgi5Q8s9B09NH5DQxfJ3vE9-QwJgcI">
+        <div class="cfg-row">
+          <input type="text" id="cfg-telegram-chat" placeholder="Your Chat ID (click detect)" class="input-field">
+          <button id="btn-detect-telegram" class="btn btn-xs btn-secondary">🔍 Detect</button>
+        </div>
+        <div class="hint-text">Open <a href="https://t.me/antigravitycode_bot" target="_blank">@antigravitycode_bot</a>, send /start, then click Detect.</div>
+        <button id="btn-test-telegram" class="btn btn-xs btn-outline" style="margin-top:8px;">📲 Test Alert</button>
+        <div id="telegram-feedback"></div>
+
+        <!-- Interval -->
+        <div class="form-section-label" style="margin-top:20px;">⚡ SCAN INTERVAL</div>
+        <div class="cfg-row">
+          <input type="number" id="cfg-interval" value="30" min="10" max="300" class="input-field" style="width:120px;">
+          <span class="hint-text" style="margin:0;">seconds between cycles</span>
+        </div>
+
+        <!-- Hidden AI fields (kept for compatibility) -->
+        <input type="hidden" id="cfg-ai-provider" value="quantitative">
+        <input type="hidden" id="cfg-gemini-key" value="">
+        <input type="hidden" id="cfg-gemini-model" value="quantitative">
+        <input type="hidden" id="cfg-api-secret-hidden" value="">
+      </div>
+
+      <div class="modal-foot">
+        <button class="btn btn-outline" id="btn-cancel-modal">Cancel</button>
+        <button class="btn btn-primary" id="btn-save-settings">💾 Save & Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

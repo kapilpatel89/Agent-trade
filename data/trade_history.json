@@ -1,0 +1,38 @@
+[
+  {
+    "id": "16bbcadc",
+    "market": "ADAINR",
+    "pair": "I-ADA_INR",
+    "symbol": "ADA",
+    "quantity": 7.3,
+    "entry_price": 20.599,
+    "exit_price": 20.349,
+    "cost_inr": 150.37,
+    "net_return_inr": 148.25,
+    "net_pnl_inr": -2.12,
+    "net_pnl_pct": -1.41,
+    "fees_inr": 0.6,
+    "opened_at": "2026-08-30 19:26:17",
+    "closed_at": "2026-08-30 21:08:21",
+    "exit_reason": "Trailing Stop Triggered (Profit Guard)",
+    "thesis": "Momentum breakout continuation: Bullish MACD expansion with 1.8x volume surge confirming buyers absorbing resistance."
+  },
+  {
+    "id": "2bbc2ac3",
+    "market": "BTCINR",
+    "pair": "I-BTC_INR",
+    "symbol": "BTC",
+    "quantity": 1.9e-05,
+    "entry_price": 7800000.0,
+    "exit_price": 8190000.0,
+    "cost_inr": 148.2,
+    "net_return_inr": 153.74,
+    "net_pnl_inr": 5.54,
+    "net_pnl_pct": 3.74,
+    "fees_inr": 2.17,
+    "opened_at": "2026-08-30 18:39:15",
+    "closed_at": "2026-08-30 18:39:15",
+    "exit_reason": "TP Target",
+    "thesis": "Test Buy Setup"
+  }
+]

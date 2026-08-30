@@ -1,0 +1,1202 @@
+[
+  {
+    "timestamp": "2026-08-30 22:03:26",
+    "category": "EXECUTION",
+    "title": "\ud83d\udccc Tracking Open Trade: #ETH | PnL: \u20b9+2.86 (+1.92%)",
+    "details": "Price: \u20b9252,659.4000 | Entry: \u20b9247,900.0000 | Trailing Stop: \u20b9249,155.7500 | Target TP1: \u20b9253,849.6000. Profit guard active.",
+    "level": "success",
+    "pair": "I-ETH_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:03:26",
+    "category": "EXECUTION",
+    "title": "\ud83d\udccc Tracking Open Trade: #XRP | PnL: \u20b9+0.85 (+0.60%)",
+    "details": "Price: \u20b9141.8470 | Entry: \u20b9140.9990 | Trailing Stop: \u20b9139.8900 | Target TP1: \u20b9144.3800. Profit guard active.",
+    "level": "success",
+    "pair": "I-XRP_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:03:26",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #BTC/INR @ \u20b97,920,416.30 \u2192 HOLD (Score: +20/100)",
+    "details": "RSI(14): 66.1 \u2014 Overbought \u2014 caution \ud83d\udd34. MACD Hist: +6889.288 \u2014 Bullish expanding. Volume: 0.79x. Patterns: Bearish Engulfing (Strong Sell). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-BTC_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:03:26",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #ETH/INR @ \u20b9252,659.40 \u2192 HOLD (Score: +20/100)",
+    "details": "RSI(14): 72.7 \u2014 Overbought \u2014 caution \ud83d\udd34. MACD Hist: +370.939 \u2014 Bullish expanding. Volume: 2.15x. Patterns: No reversal patterns. Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-ETH_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:03:26",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #SOL/INR @ \u20b910,745.50 \u2192 HOLD (Score: +50/100)",
+    "details": "RSI(14): 59.4 \u2014 Neutral range. MACD Hist: +10.275 \u2014 Bullish expanding. Volume: 1.12x. Patterns: Bullish Engulfing (Strong Buy). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-SOL_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:03:26",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #DOGE/INR @ \u20b98.57 \u2192 HOLD (Score: +30/100)",
+    "details": "RSI(14): 49.8 \u2014 Neutral range. MACD Hist: +0.004 \u2014 Bullish expanding. Volume: 2.88x. Patterns: No reversal patterns. Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-DOGE_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:03:58",
+    "category": "SURVIVAL",
+    "title": "Health: 100.0% HP | Capital: \u20b91,005.95 (PRUDENT COMPOUNDING \ud83c\udfaf)",
+    "details": "Wallet Equity: \u20b91,005.95 (Net: \u20b9+5.95 / +0.60%). Cash Reserve: \u20b9300.00 safeguarded. Active Positions: 2/2.",
+    "level": "success",
+    "pair": "PORTFOLIO"
+  },
+  {
+    "timestamp": "2026-08-30 22:03:58",
+    "category": "SCAN",
+    "title": "\ud83d\udce1 CoinDCX Scan Complete \u2014 Top Movers: #HNT (+167.3%), #TNSR (+19.9%), #UNI (+17.9%), #SPX (+12.7%), #CAKE (+11.0%)",
+    "details": "Full market sweep done. Top gainers: #HNT (+167.3%), #TNSR (+19.9%), #UNI (+17.9%), #SPX (+12.7%), #CAKE (+11.0%). Highest volume spikes: #HNT 10.0x, #TNSR 10.0x, #UNI 10.0x. Filtering spread <2.5%, 24h turnover >\u20b925K. Applying RSI/MACD/EMA confluence filter before candidate approval.",
+    "level": "info",
+    "pair": "I-HNT_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:03:58",
+    "category": "SCAN",
+    "title": "#HNT/INR  \u20b991.9700  +167.28%",
+    "details": "24h Range: \u20b932.8700\u2013\u20b998.5500  |  Spread: 1.08%  |  Why flagged: Strong 24h momentum +167.3% | Volume spike 10.0x above avg | Wide 24h range 199.8% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-HNT_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:03:58",
+    "category": "SCAN",
+    "title": "#TNSR/INR  \u20b94.1430  +19.95%",
+    "details": "24h Range: \u20b93.3620\u2013\u20b94.5050  |  Spread: 2.30%  |  Why flagged: Strong 24h momentum +19.9% | Volume spike 10.0x above avg | Wide 24h range 34.0% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-TNSR_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:03:58",
+    "category": "SCAN",
+    "title": "#UNI/INR  \u20b9535.0000  +17.91%",
+    "details": "24h Range: \u20b9456.5900\u2013\u20b9535.0000  |  Spread: 0.25%  |  Why flagged: Strong 24h momentum +17.9% | Volume spike 10.0x above avg | Tight spread \u2014 liquid market | Wide 24h range 17.2% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-UNI_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:03:58",
+    "category": "SCAN",
+    "title": "#SPX/INR  \u20b959.1180  +12.65%",
+    "details": "24h Range: \u20b952.3880\u2013\u20b959.6520  |  Spread: 1.43%  |  Why flagged: Strong 24h momentum +12.7% | Volume spike 10.0x above avg | Wide 24h range 13.9% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-SPX_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:03:58",
+    "category": "EXECUTION",
+    "title": "\ud83d\udccc Tracking Open Trade: #ETH | PnL: \u20b9+2.86 (+1.92%)",
+    "details": "Price: \u20b9252,659.4000 | Entry: \u20b9247,900.0000 | Trailing Stop: \u20b9249,155.7500 | Target TP1: \u20b9253,849.6000. Profit guard active.",
+    "level": "success",
+    "pair": "I-ETH_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:03:58",
+    "category": "EXECUTION",
+    "title": "\ud83d\udccc Tracking Open Trade: #XRP | PnL: \u20b9+0.95 (+0.67%)",
+    "details": "Price: \u20b9141.9480 | Entry: \u20b9140.9990 | Trailing Stop: \u20b9139.8900 | Target TP1: \u20b9144.3800. Profit guard active.",
+    "level": "success",
+    "pair": "I-XRP_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:03:58",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #BTC/INR @ \u20b97,921,408.30 \u2192 HOLD (Score: +30/100)",
+    "details": "RSI(14): 66.4 \u2014 Overbought \u2014 caution \ud83d\udd34. MACD Hist: +6952.596 \u2014 Bullish expanding. Volume: 0.81x. Patterns: Bearish Engulfing (Strong Sell). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-BTC_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:03:58",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #ETH/INR @ \u20b9252,659.40 \u2192 HOLD (Score: +20/100)",
+    "details": "RSI(14): 72.7 \u2014 Overbought \u2014 caution \ud83d\udd34. MACD Hist: +370.939 \u2014 Bullish expanding. Volume: 2.15x. Patterns: No reversal patterns. Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-ETH_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:03:58",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #SOL/INR @ \u20b910,747.80 \u2192 HOLD (Score: +50/100)",
+    "details": "RSI(14): 59.5 \u2014 Neutral range. MACD Hist: +10.421 \u2014 Bullish expanding. Volume: 1.12x. Patterns: Bullish Engulfing (Strong Buy). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-SOL_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:03:58",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #DOGE/INR @ \u20b98.57 \u2192 HOLD (Score: +30/100)",
+    "details": "RSI(14): 49.8 \u2014 Neutral range. MACD Hist: +0.004 \u2014 Bullish expanding. Volume: 2.88x. Patterns: No reversal patterns. Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-DOGE_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:04:34",
+    "category": "SURVIVAL",
+    "title": "Health: 100.0% HP | Capital: \u20b91,006.05 (PRUDENT COMPOUNDING \ud83c\udfaf)",
+    "details": "Wallet Equity: \u20b91,006.05 (Net: \u20b9+6.05 / +0.60%). Cash Reserve: \u20b9300.00 safeguarded. Active Positions: 2/2.",
+    "level": "success",
+    "pair": "PORTFOLIO"
+  },
+  {
+    "timestamp": "2026-08-30 22:04:34",
+    "category": "SCAN",
+    "title": "\ud83d\udce1 CoinDCX Scan Complete \u2014 Top Movers: #HNT (+167.3%), #TNSR (+19.7%), #UNI (+17.9%), #SPX (+12.2%), #CAKE (+11.0%)",
+    "details": "Full market sweep done. Top gainers: #HNT (+167.3%), #TNSR (+19.7%), #UNI (+17.9%), #SPX (+12.2%), #CAKE (+11.0%). Highest volume spikes: #HNT 10.0x, #TNSR 10.0x, #UNI 10.0x. Filtering spread <2.5%, 24h turnover >\u20b925K. Applying RSI/MACD/EMA confluence filter before candidate approval.",
+    "level": "info",
+    "pair": "I-HNT_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:04:34",
+    "category": "SCAN",
+    "title": "#HNT/INR  \u20b991.9700  +167.28%",
+    "details": "24h Range: \u20b932.8700\u2013\u20b998.5500  |  Spread: 1.15%  |  Why flagged: Strong 24h momentum +167.3% | Volume spike 10.0x above avg | Wide 24h range 199.8% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-HNT_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:04:34",
+    "category": "SCAN",
+    "title": "#TNSR/INR  \u20b94.1340  +19.69%",
+    "details": "24h Range: \u20b93.3620\u2013\u20b94.5050  |  Spread: 2.20%  |  Why flagged: Strong 24h momentum +19.7% | Volume spike 10.0x above avg | Wide 24h range 34.0% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-TNSR_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:04:34",
+    "category": "SCAN",
+    "title": "#UNI/INR  \u20b9535.0000  +17.91%",
+    "details": "24h Range: \u20b9456.5900\u2013\u20b9535.0000  |  Spread: 0.32%  |  Why flagged: Strong 24h momentum +17.9% | Volume spike 10.0x above avg | Tight spread \u2014 liquid market | Wide 24h range 17.2% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-UNI_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:04:34",
+    "category": "SCAN",
+    "title": "#SPX/INR  \u20b959.1180  +12.17%",
+    "details": "24h Range: \u20b952.3880\u2013\u20b959.6520  |  Spread: 1.37%  |  Why flagged: Strong 24h momentum +12.2% | Volume spike 10.0x above avg | Wide 24h range 13.9% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-SPX_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:04:34",
+    "category": "EXECUTION",
+    "title": "\ud83d\udccc Tracking Open Trade: #ETH | PnL: \u20b9+2.86 (+1.92%)",
+    "details": "Price: \u20b9252,659.4000 | Entry: \u20b9247,900.0000 | Trailing Stop: \u20b9249,155.7500 | Target TP1: \u20b9253,849.6000. Profit guard active.",
+    "level": "success",
+    "pair": "I-ETH_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:04:34",
+    "category": "EXECUTION",
+    "title": "\ud83d\udccc Tracking Open Trade: #XRP | PnL: \u20b9+1.00 (+0.71%)",
+    "details": "Price: \u20b9142.0050 | Entry: \u20b9140.9990 | Trailing Stop: \u20b9139.8900 | Target TP1: \u20b9144.3800. Profit guard active.",
+    "level": "success",
+    "pair": "I-XRP_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:04:34",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #BTC/INR @ \u20b97,964,203.50 \u2192 HOLD (Score: +25/100)",
+    "details": "RSI(14): 72.9 \u2014 Overbought \u2014 caution \ud83d\udd34. MACD Hist: +9683.685 \u2014 Bullish expanding. Volume: 0.82x. Patterns: Morning Star (High Probability Bullish). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-BTC_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:04:34",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #ETH/INR @ \u20b9252,659.40 \u2192 HOLD (Score: +20/100)",
+    "details": "RSI(14): 72.7 \u2014 Overbought \u2014 caution \ud83d\udd34. MACD Hist: +370.939 \u2014 Bullish expanding. Volume: 2.16x. Patterns: No reversal patterns. Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-ETH_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:04:34",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #SOL/INR @ \u20b910,678.30 \u2192 HOLD (Score: +35/100)",
+    "details": "RSI(14): 55.0 \u2014 Neutral range. MACD Hist: +5.986 \u2014 Bullish expanding. Volume: 1.14x. Patterns: No reversal patterns. Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-SOL_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:04:34",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #DOGE/INR @ \u20b98.64 \u2192 HOLD (Score: +75/100)",
+    "details": "RSI(14): 58.0 \u2014 Neutral range. MACD Hist: +0.009 \u2014 Bullish expanding. Volume: 2.89x. Patterns: Bullish Engulfing (Strong Buy), Morning Star (High Probability Bullish). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-DOGE_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:05:07",
+    "category": "SURVIVAL",
+    "title": "Health: 100.0% HP | Capital: \u20b91,006.10 (PRUDENT COMPOUNDING \ud83c\udfaf)",
+    "details": "Wallet Equity: \u20b91,006.10 (Net: \u20b9+6.10 / +0.61%). Cash Reserve: \u20b9300.00 safeguarded. Active Positions: 2/2.",
+    "level": "success",
+    "pair": "PORTFOLIO"
+  },
+  {
+    "timestamp": "2026-08-30 22:05:07",
+    "category": "SCAN",
+    "title": "\ud83d\udce1 CoinDCX Scan Complete \u2014 Top Movers: #HNT (+167.4%), #UNI (+17.9%), #SPX (+12.2%), #CAKE (+11.0%), #DYM (+7.9%)",
+    "details": "Full market sweep done. Top gainers: #HNT (+167.4%), #UNI (+17.9%), #SPX (+12.2%), #CAKE (+11.0%), #DYM (+7.9%). Highest volume spikes: #HNT 10.0x, #UNI 10.0x, #SPX 10.0x. Filtering spread <2.5%, 24h turnover >\u20b925K. Applying RSI/MACD/EMA confluence filter before candidate approval.",
+    "level": "info",
+    "pair": "I-HNT_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:05:07",
+    "category": "SCAN",
+    "title": "#HNT/INR  \u20b992.0000  +167.36%",
+    "details": "24h Range: \u20b932.8700\u2013\u20b998.5500  |  Spread: 1.18%  |  Why flagged: Strong 24h momentum +167.4% | Volume spike 10.0x above avg | Wide 24h range 199.8% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-HNT_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:05:07",
+    "category": "SCAN",
+    "title": "#UNI/INR  \u20b9535.0000  +17.91%",
+    "details": "24h Range: \u20b9456.5900\u2013\u20b9535.0000  |  Spread: 0.32%  |  Why flagged: Strong 24h momentum +17.9% | Volume spike 10.0x above avg | Tight spread \u2014 liquid market | Wide 24h range 17.2% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-UNI_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:05:07",
+    "category": "SCAN",
+    "title": "#SPX/INR  \u20b959.1180  +12.17%",
+    "details": "24h Range: \u20b952.3880\u2013\u20b959.6520  |  Spread: 1.38%  |  Why flagged: Strong 24h momentum +12.2% | Volume spike 10.0x above avg | Wide 24h range 13.9% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-SPX_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:05:07",
+    "category": "SCAN",
+    "title": "#CAKE/INR  \u20b9190.0000  +11.01%",
+    "details": "24h Range: \u20b9171.1600\u2013\u20b9190.0000  |  Spread: 1.50%  |  Why flagged: Strong 24h momentum +11.0% | Volume spike 10.0x above avg | Wide 24h range 11.0% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-CAKE_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:05:07",
+    "category": "EXECUTION",
+    "title": "\ud83d\udccc Tracking Open Trade: #ETH | PnL: \u20b9+2.86 (+1.92%)",
+    "details": "Price: \u20b9252,659.4000 | Entry: \u20b9247,900.0000 | Trailing Stop: \u20b9249,155.7500 | Target TP1: \u20b9253,849.6000. Profit guard active.",
+    "level": "success",
+    "pair": "I-ETH_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:05:07",
+    "category": "EXECUTION",
+    "title": "\ud83d\udccc Tracking Open Trade: #XRP | PnL: \u20b9+1.00 (+0.71%)",
+    "details": "Price: \u20b9142.0050 | Entry: \u20b9140.9990 | Trailing Stop: \u20b9139.8900 | Target TP1: \u20b9144.3800. Profit guard active.",
+    "level": "success",
+    "pair": "I-XRP_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:05:07",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #BTC/INR @ \u20b97,964,999.90 \u2192 HOLD (Score: +25/100)",
+    "details": "RSI(14): 73.0 \u2014 Overbought \u2014 caution \ud83d\udd34. MACD Hist: +9734.510 \u2014 Bullish expanding. Volume: 0.82x. Patterns: Morning Star (High Probability Bullish). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-BTC_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:05:07",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #ETH/INR @ \u20b9252,659.40 \u2192 HOLD (Score: +20/100)",
+    "details": "RSI(14): 72.7 \u2014 Overbought \u2014 caution \ud83d\udd34. MACD Hist: +370.939 \u2014 Bullish expanding. Volume: 2.16x. Patterns: No reversal patterns. Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-ETH_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:05:07",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #SOL/INR @ \u20b910,662.90 \u2192 HOLD (Score: +40/100)",
+    "details": "RSI(14): 53.8 \u2014 Neutral range. MACD Hist: +5.003 \u2014 Bullish expanding. Volume: 1.18x. Patterns: Inverted Hammer (Bullish Setup). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-SOL_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:05:07",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #DOGE/INR @ \u20b98.64 \u2192 HOLD (Score: +75/100)",
+    "details": "RSI(14): 58.0 \u2014 Neutral range. MACD Hist: +0.009 \u2014 Bullish expanding. Volume: 2.89x. Patterns: Bullish Engulfing (Strong Buy), Morning Star (High Probability Bullish). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-DOGE_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:05:39",
+    "category": "SURVIVAL",
+    "title": "Health: 100.0% HP | Capital: \u20b91,006.10 (PRUDENT COMPOUNDING \ud83c\udfaf)",
+    "details": "Wallet Equity: \u20b91,006.10 (Net: \u20b9+6.10 / +0.61%). Cash Reserve: \u20b9300.00 safeguarded. Active Positions: 2/2.",
+    "level": "success",
+    "pair": "PORTFOLIO"
+  },
+  {
+    "timestamp": "2026-08-30 22:05:39",
+    "category": "SCAN",
+    "title": "\ud83d\udce1 CoinDCX Scan Complete \u2014 Top Movers: #HNT (+168.8%), #TNSR (+19.1%), #UNI (+18.0%), #SPX (+12.2%), #CAKE (+11.0%)",
+    "details": "Full market sweep done. Top gainers: #HNT (+168.8%), #TNSR (+19.1%), #UNI (+18.0%), #SPX (+12.2%), #CAKE (+11.0%). Highest volume spikes: #HNT 10.0x, #TNSR 10.0x, #UNI 10.0x. Filtering spread <2.5%, 24h turnover >\u20b925K. Applying RSI/MACD/EMA confluence filter before candidate approval.",
+    "level": "info",
+    "pair": "I-HNT_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:05:39",
+    "category": "SCAN",
+    "title": "#HNT/INR  \u20b992.5700  +168.79%",
+    "details": "24h Range: \u20b932.8700\u2013\u20b998.5500  |  Spread: 1.09%  |  Why flagged: Strong 24h momentum +168.8% | Volume spike 10.0x above avg | Wide 24h range 199.8% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-HNT_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:05:39",
+    "category": "SCAN",
+    "title": "#TNSR/INR  \u20b94.1140  +19.11%",
+    "details": "24h Range: \u20b93.3620\u2013\u20b94.5050  |  Spread: 2.18%  |  Why flagged: Strong 24h momentum +19.1% | Volume spike 10.0x above avg | Wide 24h range 34.0% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-TNSR_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:05:39",
+    "category": "SCAN",
+    "title": "#UNI/INR  \u20b9535.5500  +18.03%",
+    "details": "24h Range: \u20b9456.5900\u2013\u20b9535.5500  |  Spread: 0.74%  |  Why flagged: Strong 24h momentum +18.0% | Volume spike 10.0x above avg | Wide 24h range 17.3% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-UNI_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:05:39",
+    "category": "SCAN",
+    "title": "#SPX/INR  \u20b959.1180  +12.17%",
+    "details": "24h Range: \u20b952.3880\u2013\u20b959.6520  |  Spread: 1.29%  |  Why flagged: Strong 24h momentum +12.2% | Volume spike 10.0x above avg | Wide 24h range 13.9% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-SPX_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:05:39",
+    "category": "EXECUTION",
+    "title": "\ud83d\udccc Tracking Open Trade: #ETH | PnL: \u20b9+2.86 (+1.92%)",
+    "details": "Price: \u20b9252,659.4000 | Entry: \u20b9247,900.0000 | Trailing Stop: \u20b9249,155.7500 | Target TP1: \u20b9253,849.6000. Profit guard active.",
+    "level": "success",
+    "pair": "I-ETH_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:05:39",
+    "category": "EXECUTION",
+    "title": "\ud83d\udccc Tracking Open Trade: #XRP | PnL: \u20b9+1.00 (+0.71%)",
+    "details": "Price: \u20b9142.0050 | Entry: \u20b9140.9990 | Trailing Stop: \u20b9139.8900 | Target TP1: \u20b9144.3800. Profit guard active.",
+    "level": "success",
+    "pair": "I-XRP_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:05:39",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #BTC/INR @ \u20b97,925,670.20 \u2192 HOLD (Score: +30/100)",
+    "details": "RSI(14): 67.6 \u2014 Overbought \u2014 caution \ud83d\udd34. MACD Hist: +7224.580 \u2014 Bullish expanding. Volume: 0.92x. Patterns: Bearish Engulfing (Strong Sell), Doji (Market Indecision). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-BTC_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:05:39",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #ETH/INR @ \u20b9252,659.40 \u2192 HOLD (Score: +20/100)",
+    "details": "RSI(14): 72.7 \u2014 Overbought \u2014 caution \ud83d\udd34. MACD Hist: +370.939 \u2014 Bullish expanding. Volume: 2.19x. Patterns: No reversal patterns. Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-ETH_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:05:39",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #SOL/INR @ \u20b910,741.80 \u2192 HOLD (Score: +50/100)",
+    "details": "RSI(14): 59.2 \u2014 Neutral range. MACD Hist: +10.039 \u2014 Bullish expanding. Volume: 1.18x. Patterns: Bullish Engulfing (Strong Buy). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-SOL_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:05:39",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #DOGE/INR @ \u20b98.64 \u2192 HOLD (Score: +75/100)",
+    "details": "RSI(14): 58.0 \u2014 Neutral range. MACD Hist: +0.009 \u2014 Bullish expanding. Volume: 2.89x. Patterns: Bullish Engulfing (Strong Buy), Morning Star (High Probability Bullish). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-DOGE_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:06:12",
+    "category": "SURVIVAL",
+    "title": "Health: 100.0% HP | Capital: \u20b91,006.10 (PRUDENT COMPOUNDING \ud83c\udfaf)",
+    "details": "Wallet Equity: \u20b91,006.10 (Net: \u20b9+6.10 / +0.61%). Cash Reserve: \u20b9300.00 safeguarded. Active Positions: 2/2.",
+    "level": "success",
+    "pair": "PORTFOLIO"
+  },
+  {
+    "timestamp": "2026-08-30 22:06:12",
+    "category": "SCAN",
+    "title": "\ud83d\udce1 CoinDCX Scan Complete \u2014 Top Movers: #HNT (+167.1%), #UNI (+19.9%), #TNSR (+19.1%), #SPX (+12.1%), #CAKE (+11.0%)",
+    "details": "Full market sweep done. Top gainers: #HNT (+167.1%), #UNI (+19.9%), #TNSR (+19.1%), #SPX (+12.1%), #CAKE (+11.0%). Highest volume spikes: #HNT 10.0x, #UNI 10.0x, #TNSR 10.0x. Filtering spread <2.5%, 24h turnover >\u20b925K. Applying RSI/MACD/EMA confluence filter before candidate approval.",
+    "level": "info",
+    "pair": "I-HNT_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:06:12",
+    "category": "SCAN",
+    "title": "#HNT/INR  \u20b992.0000  +167.13%",
+    "details": "24h Range: \u20b932.8700\u2013\u20b998.5500  |  Spread: 0.92%  |  Why flagged: Strong 24h momentum +167.1% | Volume spike 10.0x above avg | Wide 24h range 199.8% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-HNT_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:06:12",
+    "category": "SCAN",
+    "title": "#UNI/INR  \u20b9544.0400  +19.90%",
+    "details": "24h Range: \u20b9456.5900\u2013\u20b9544.0400  |  Spread: 1.44%  |  Why flagged: Strong 24h momentum +19.9% | Volume spike 10.0x above avg | Wide 24h range 19.2% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-UNI_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:06:12",
+    "category": "SCAN",
+    "title": "#TNSR/INR  \u20b94.1140  +19.11%",
+    "details": "24h Range: \u20b93.3620\u2013\u20b94.5050  |  Spread: 2.42%  |  Why flagged: Strong 24h momentum +19.1% | Volume spike 10.0x above avg | Wide 24h range 34.0% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-TNSR_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:06:12",
+    "category": "SCAN",
+    "title": "#SPX/INR  \u20b959.1010  +12.14%",
+    "details": "24h Range: \u20b952.3880\u2013\u20b959.6520  |  Spread: 1.30%  |  Why flagged: Strong 24h momentum +12.1% | Volume spike 10.0x above avg | Wide 24h range 13.9% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-SPX_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:06:12",
+    "category": "EXECUTION",
+    "title": "\ud83d\udccc Tracking Open Trade: #ETH | PnL: \u20b9+2.86 (+1.92%)",
+    "details": "Price: \u20b9252,659.4000 | Entry: \u20b9247,900.0000 | Trailing Stop: \u20b9249,155.7500 | Target TP1: \u20b9253,849.6000. Profit guard active.",
+    "level": "success",
+    "pair": "I-ETH_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:06:12",
+    "category": "EXECUTION",
+    "title": "\ud83d\udccc Tracking Open Trade: #XRP | PnL: \u20b9+1.00 (+0.71%)",
+    "details": "Price: \u20b9142.0050 | Entry: \u20b9140.9990 | Trailing Stop: \u20b9139.8900 | Target TP1: \u20b9144.3800. Profit guard active.",
+    "level": "success",
+    "pair": "I-XRP_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:06:12",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #BTC/INR @ \u20b97,930,000.10 \u2192 HOLD (Score: +45/100)",
+    "details": "RSI(14): 68.8 \u2014 Overbought \u2014 caution \ud83d\udd34. MACD Hist: +7500.904 \u2014 Bullish expanding. Volume: 0.96x. Patterns: Doji (Market Indecision). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-BTC_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:06:12",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #ETH/INR @ \u20b9252,659.40 \u2192 HOLD (Score: +20/100)",
+    "details": "RSI(14): 72.7 \u2014 Overbought \u2014 caution \ud83d\udd34. MACD Hist: +370.939 \u2014 Bullish expanding. Volume: 2.19x. Patterns: No reversal patterns. Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-ETH_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:06:12",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #SOL/INR @ \u20b910,745.40 \u2192 HOLD (Score: +50/100)",
+    "details": "RSI(14): 59.4 \u2014 Neutral range. MACD Hist: +10.268 \u2014 Bullish expanding. Volume: 1.20x. Patterns: Bullish Engulfing (Strong Buy). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-SOL_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:06:12",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #DOGE/INR @ \u20b98.64 \u2192 HOLD (Score: +75/100)",
+    "details": "RSI(14): 58.0 \u2014 Neutral range. MACD Hist: +0.009 \u2014 Bullish expanding. Volume: 2.89x. Patterns: Bullish Engulfing (Strong Buy), Morning Star (High Probability Bullish). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-DOGE_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:06:47",
+    "category": "SURVIVAL",
+    "title": "Health: 100.0% HP | Capital: \u20b91,006.10 (PRUDENT COMPOUNDING \ud83c\udfaf)",
+    "details": "Wallet Equity: \u20b91,006.10 (Net: \u20b9+6.10 / +0.61%). Cash Reserve: \u20b9300.00 safeguarded. Active Positions: 2/2.",
+    "level": "success",
+    "pair": "PORTFOLIO"
+  },
+  {
+    "timestamp": "2026-08-30 22:06:47",
+    "category": "SCAN",
+    "title": "\ud83d\udce1 CoinDCX Scan Complete \u2014 Top Movers: #HNT (+166.3%), #UNI (+19.8%), #TNSR (+19.1%), #SPX (+12.1%), #CAKE (+11.0%)",
+    "details": "Full market sweep done. Top gainers: #HNT (+166.3%), #UNI (+19.8%), #TNSR (+19.1%), #SPX (+12.1%), #CAKE (+11.0%). Highest volume spikes: #HNT 10.0x, #UNI 10.0x, #TNSR 10.0x. Filtering spread <2.5%, 24h turnover >\u20b925K. Applying RSI/MACD/EMA confluence filter before candidate approval.",
+    "level": "info",
+    "pair": "I-HNT_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:06:47",
+    "category": "SCAN",
+    "title": "#HNT/INR  \u20b993.0600  +166.27%",
+    "details": "24h Range: \u20b932.8700\u2013\u20b998.5500  |  Spread: 1.09%  |  Why flagged: Strong 24h momentum +166.3% | Volume spike 10.0x above avg | Wide 24h range 199.8% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-HNT_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:06:47",
+    "category": "SCAN",
+    "title": "#UNI/INR  \u20b9543.4300  +19.77%",
+    "details": "24h Range: \u20b9456.5900\u2013\u20b9544.0400  |  Spread: 1.38%  |  Why flagged: Strong 24h momentum +19.8% | Volume spike 10.0x above avg | Wide 24h range 19.2% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-UNI_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:06:47",
+    "category": "SCAN",
+    "title": "#TNSR/INR  \u20b94.1140  +19.11%",
+    "details": "24h Range: \u20b93.3620\u2013\u20b94.5050  |  Spread: 2.38%  |  Why flagged: Strong 24h momentum +19.1% | Volume spike 10.0x above avg | Wide 24h range 34.0% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-TNSR_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:06:47",
+    "category": "SCAN",
+    "title": "#SPX/INR  \u20b959.1010  +12.14%",
+    "details": "24h Range: \u20b952.3880\u2013\u20b959.6520  |  Spread: 1.26%  |  Why flagged: Strong 24h momentum +12.1% | Volume spike 10.0x above avg | Wide 24h range 13.9% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-SPX_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:06:47",
+    "category": "EXECUTION",
+    "title": "\ud83d\udccc Tracking Open Trade: #ETH | PnL: \u20b9+2.46 (+1.65%)",
+    "details": "Price: \u20b9251,998.7000 | Entry: \u20b9247,900.0000 | Trailing Stop: \u20b9249,155.7500 | Target TP1: \u20b9253,849.6000. Profit guard active.",
+    "level": "success",
+    "pair": "I-ETH_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:06:47",
+    "category": "EXECUTION",
+    "title": "\ud83d\udccc Tracking Open Trade: #XRP | PnL: \u20b9+1.00 (+0.71%)",
+    "details": "Price: \u20b9142.0050 | Entry: \u20b9140.9990 | Trailing Stop: \u20b9139.8900 | Target TP1: \u20b9144.3800. Profit guard active.",
+    "level": "success",
+    "pair": "I-XRP_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:06:47",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #BTC/INR @ \u20b97,962,510.50 \u2192 HOLD (Score: +25/100)",
+    "details": "RSI(14): 72.7 \u2014 Overbought \u2014 caution \ud83d\udd34. MACD Hist: +9575.642 \u2014 Bullish expanding. Volume: 0.96x. Patterns: Morning Star (High Probability Bullish). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-BTC_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:06:47",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #ETH/INR @ \u20b9251,998.70 \u2192 HOLD (Score: +20/100)",
+    "details": "RSI(14): 71.0 \u2014 Overbought \u2014 caution \ud83d\udd34. MACD Hist: +328.775 \u2014 Bullish expanding. Volume: 2.19x. Patterns: No reversal patterns. Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-ETH_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:06:47",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #SOL/INR @ \u20b910,745.40 \u2192 HOLD (Score: +50/100)",
+    "details": "RSI(14): 59.4 \u2014 Neutral range. MACD Hist: +10.268 \u2014 Bullish expanding. Volume: 1.20x. Patterns: Bullish Engulfing (Strong Buy). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-SOL_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:06:47",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #DOGE/INR @ \u20b98.64 \u2192 HOLD (Score: +75/100)",
+    "details": "RSI(14): 58.0 \u2014 Neutral range. MACD Hist: +0.009 \u2014 Bullish expanding. Volume: 2.89x. Patterns: Bullish Engulfing (Strong Buy), Morning Star (High Probability Bullish). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-DOGE_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:07:20",
+    "category": "SURVIVAL",
+    "title": "Health: 100.0% HP | Capital: \u20b91,005.70 (PRUDENT COMPOUNDING \ud83c\udfaf)",
+    "details": "Wallet Equity: \u20b91,005.70 (Net: \u20b9+5.70 / +0.57%). Cash Reserve: \u20b9300.00 safeguarded. Active Positions: 2/2.",
+    "level": "success",
+    "pair": "PORTFOLIO"
+  },
+  {
+    "timestamp": "2026-08-30 22:07:20",
+    "category": "SCAN",
+    "title": "\ud83d\udce1 CoinDCX Scan Complete \u2014 Top Movers: #HNT (+165.9%), #UNI (+19.8%), #TNSR (+19.4%), #SPX (+12.1%), #CAKE (+11.0%)",
+    "details": "Full market sweep done. Top gainers: #HNT (+165.9%), #UNI (+19.8%), #TNSR (+19.4%), #SPX (+12.1%), #CAKE (+11.0%). Highest volume spikes: #HNT 10.0x, #UNI 10.0x, #TNSR 10.0x. Filtering spread <2.5%, 24h turnover >\u20b925K. Applying RSI/MACD/EMA confluence filter before candidate approval.",
+    "level": "info",
+    "pair": "I-HNT_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:07:20",
+    "category": "SCAN",
+    "title": "#HNT/INR  \u20b993.0600  +165.89%",
+    "details": "24h Range: \u20b932.8700\u2013\u20b998.5500  |  Spread: 1.16%  |  Why flagged: Strong 24h momentum +165.9% | Volume spike 10.0x above avg | Wide 24h range 199.8% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-HNT_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:07:20",
+    "category": "SCAN",
+    "title": "#UNI/INR  \u20b9543.4300  +19.77%",
+    "details": "24h Range: \u20b9456.5900\u2013\u20b9544.0400  |  Spread: 1.46%  |  Why flagged: Strong 24h momentum +19.8% | Volume spike 10.0x above avg | Wide 24h range 19.2% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-UNI_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:07:20",
+    "category": "SCAN",
+    "title": "#TNSR/INR  \u20b94.1240  +19.40%",
+    "details": "24h Range: \u20b93.3620\u2013\u20b94.5050  |  Spread: 1.94%  |  Why flagged: Strong 24h momentum +19.4% | Volume spike 10.0x above avg | Wide 24h range 34.0% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-TNSR_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:07:20",
+    "category": "SCAN",
+    "title": "#SPX/INR  \u20b959.1010  +12.14%",
+    "details": "24h Range: \u20b952.3880\u2013\u20b959.6520  |  Spread: 1.33%  |  Why flagged: Strong 24h momentum +12.1% | Volume spike 10.0x above avg | Wide 24h range 13.9% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-SPX_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:07:20",
+    "category": "EXECUTION",
+    "title": "\ud83d\udccc Tracking Open Trade: #ETH | PnL: \u20b9+2.33 (+1.57%)",
+    "details": "Price: \u20b9251,779.7000 | Entry: \u20b9247,900.0000 | Trailing Stop: \u20b9249,155.7500 | Target TP1: \u20b9253,849.6000. Profit guard active.",
+    "level": "success",
+    "pair": "I-ETH_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:07:20",
+    "category": "EXECUTION",
+    "title": "\ud83d\udccc Tracking Open Trade: #XRP | PnL: \u20b9+1.13 (+0.80%)",
+    "details": "Price: \u20b9142.1290 | Entry: \u20b9140.9990 | Trailing Stop: \u20b9140.0000 | Target TP1: \u20b9144.3800. Profit guard active.",
+    "level": "success",
+    "pair": "I-XRP_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:07:20",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #BTC/INR @ \u20b97,964,203.40 \u2192 HOLD (Score: +25/100)",
+    "details": "RSI(14): 72.9 \u2014 Overbought \u2014 caution \ud83d\udd34. MACD Hist: +9683.679 \u2014 Bullish expanding. Volume: 0.96x. Patterns: Morning Star (High Probability Bullish). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-BTC_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:07:20",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #ETH/INR @ \u20b9252,659.40 \u2192 HOLD (Score: +20/100)",
+    "details": "RSI(14): 72.7 \u2014 Overbought \u2014 caution \ud83d\udd34. MACD Hist: +370.939 \u2014 Bullish expanding. Volume: 2.31x. Patterns: No reversal patterns. Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-ETH_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:07:20",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #SOL/INR @ \u20b910,672.20 \u2192 HOLD (Score: +50/100)",
+    "details": "RSI(14): 54.5 \u2014 Neutral range. MACD Hist: +5.597 \u2014 Bullish expanding. Volume: 1.21x. Patterns: Inverted Hammer (Bullish Setup). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-SOL_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:07:20",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #DOGE/INR @ \u20b98.64 \u2192 HOLD (Score: +75/100)",
+    "details": "RSI(14): 58.0 \u2014 Neutral range. MACD Hist: +0.009 \u2014 Bullish expanding. Volume: 2.89x. Patterns: Bullish Engulfing (Strong Buy), Morning Star (High Probability Bullish). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-DOGE_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:07:53",
+    "category": "SURVIVAL",
+    "title": "Health: 100.0% HP | Capital: \u20b91,005.70 (PRUDENT COMPOUNDING \ud83c\udfaf)",
+    "details": "Wallet Equity: \u20b91,005.70 (Net: \u20b9+5.70 / +0.57%). Cash Reserve: \u20b9300.00 safeguarded. Active Positions: 2/2.",
+    "level": "success",
+    "pair": "PORTFOLIO"
+  },
+  {
+    "timestamp": "2026-08-30 22:07:53",
+    "category": "SCAN",
+    "title": "\ud83d\udce1 CoinDCX Scan Complete \u2014 Top Movers: #HNT (+166.0%), #UNI (+19.8%), #TNSR (+19.4%), #EGLD (+12.1%), #SPX (+12.1%)",
+    "details": "Full market sweep done. Top gainers: #HNT (+166.0%), #UNI (+19.8%), #TNSR (+19.4%), #EGLD (+12.1%), #SPX (+12.1%). Highest volume spikes: #HNT 10.0x, #UNI 10.0x, #TNSR 10.0x. Filtering spread <2.5%, 24h turnover >\u20b925K. Applying RSI/MACD/EMA confluence filter before candidate approval.",
+    "level": "info",
+    "pair": "I-HNT_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:07:53",
+    "category": "SCAN",
+    "title": "#HNT/INR  \u20b993.1100  +166.03%",
+    "details": "24h Range: \u20b932.8700\u2013\u20b998.5500  |  Spread: 0.90%  |  Why flagged: Strong 24h momentum +166.0% | Volume spike 10.0x above avg | Wide 24h range 199.8% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-HNT_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:07:53",
+    "category": "SCAN",
+    "title": "#UNI/INR  \u20b9543.4300  +19.77%",
+    "details": "24h Range: \u20b9456.5900\u2013\u20b9544.0400  |  Spread: 1.50%  |  Why flagged: Strong 24h momentum +19.8% | Volume spike 10.0x above avg | Wide 24h range 19.2% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-UNI_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:07:53",
+    "category": "SCAN",
+    "title": "#TNSR/INR  \u20b94.1240  +19.40%",
+    "details": "24h Range: \u20b93.3620\u2013\u20b94.5050  |  Spread: 2.38%  |  Why flagged: Strong 24h momentum +19.4% | Volume spike 10.0x above avg | Wide 24h range 34.0% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-TNSR_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:07:53",
+    "category": "SCAN",
+    "title": "#EGLD/INR  \u20b9390.0000  +12.14%",
+    "details": "24h Range: \u20b9349.8600\u2013\u20b9411.6500  |  Spread: 2.15%  |  Why flagged: Strong 24h momentum +12.1% | Volume spike 10.0x above avg | Wide 24h range 17.7% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-EGLD_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:07:53",
+    "category": "EXECUTION",
+    "title": "\ud83d\udccc Tracking Open Trade: #ETH | PnL: \u20b9+2.86 (+1.92%)",
+    "details": "Price: \u20b9252,659.4000 | Entry: \u20b9247,900.0000 | Trailing Stop: \u20b9249,155.7500 | Target TP1: \u20b9253,849.6000. Profit guard active.",
+    "level": "success",
+    "pair": "I-ETH_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:07:53",
+    "category": "EXECUTION",
+    "title": "\ud83d\udccc Tracking Open Trade: #XRP | PnL: \u20b9+1.13 (+0.80%)",
+    "details": "Price: \u20b9142.1290 | Entry: \u20b9140.9990 | Trailing Stop: \u20b9140.0000 | Target TP1: \u20b9144.3800. Profit guard active.",
+    "level": "success",
+    "pair": "I-XRP_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:07:53",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #BTC/INR @ \u20b97,930,000.00 \u2192 HOLD (Score: +45/100)",
+    "details": "RSI(14): 68.8 \u2014 Overbought \u2014 caution \ud83d\udd34. MACD Hist: +7500.898 \u2014 Bullish expanding. Volume: 0.98x. Patterns: Doji (Market Indecision). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-BTC_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:07:53",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #ETH/INR @ \u20b9252,659.40 \u2192 HOLD (Score: +20/100)",
+    "details": "RSI(14): 72.7 \u2014 Overbought \u2014 caution \ud83d\udd34. MACD Hist: +370.939 \u2014 Bullish expanding. Volume: 2.31x. Patterns: No reversal patterns. Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-ETH_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:07:53",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #SOL/INR @ \u20b910,672.20 \u2192 HOLD (Score: +50/100)",
+    "details": "RSI(14): 54.5 \u2014 Neutral range. MACD Hist: +5.597 \u2014 Bullish expanding. Volume: 1.21x. Patterns: Inverted Hammer (Bullish Setup). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-SOL_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:07:53",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #DOGE/INR @ \u20b98.64 \u2192 HOLD (Score: +75/100)",
+    "details": "RSI(14): 58.0 \u2014 Neutral range. MACD Hist: +0.009 \u2014 Bullish expanding. Volume: 2.89x. Patterns: Bullish Engulfing (Strong Buy), Morning Star (High Probability Bullish). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-DOGE_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:08:25",
+    "category": "SURVIVAL",
+    "title": "Health: 100.0% HP | Capital: \u20b91,006.23 (PRUDENT COMPOUNDING \ud83c\udfaf)",
+    "details": "Wallet Equity: \u20b91,006.23 (Net: \u20b9+6.23 / +0.62%). Cash Reserve: \u20b9300.00 safeguarded. Active Positions: 2/2.",
+    "level": "success",
+    "pair": "PORTFOLIO"
+  },
+  {
+    "timestamp": "2026-08-30 22:08:25",
+    "category": "SCAN",
+    "title": "\ud83d\udce1 CoinDCX Scan Complete \u2014 Top Movers: #HNT (+168.5%), #UNI (+19.8%), #TNSR (+19.4%), #EGLD (+12.1%), #SPX (+12.1%)",
+    "details": "Full market sweep done. Top gainers: #HNT (+168.5%), #UNI (+19.8%), #TNSR (+19.4%), #EGLD (+12.1%), #SPX (+12.1%). Highest volume spikes: #HNT 10.0x, #UNI 10.0x, #TNSR 10.0x. Filtering spread <2.5%, 24h turnover >\u20b925K. Applying RSI/MACD/EMA confluence filter before candidate approval.",
+    "level": "info",
+    "pair": "I-HNT_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:08:25",
+    "category": "SCAN",
+    "title": "#HNT/INR  \u20b993.9800  +168.51%",
+    "details": "24h Range: \u20b932.8700\u2013\u20b998.5500  |  Spread: 0.81%  |  Why flagged: Strong 24h momentum +168.5% | Volume spike 10.0x above avg | Wide 24h range 199.8% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-HNT_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:08:25",
+    "category": "SCAN",
+    "title": "#UNI/INR  \u20b9543.4300  +19.77%",
+    "details": "24h Range: \u20b9456.5900\u2013\u20b9544.0400  |  Spread: 1.55%  |  Why flagged: Strong 24h momentum +19.8% | Volume spike 10.0x above avg | Wide 24h range 19.2% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-UNI_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:08:25",
+    "category": "SCAN",
+    "title": "#TNSR/INR  \u20b94.1240  +19.40%",
+    "details": "24h Range: \u20b93.3620\u2013\u20b94.5050  |  Spread: 1.87%  |  Why flagged: Strong 24h momentum +19.4% | Volume spike 10.0x above avg | Wide 24h range 34.0% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-TNSR_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:08:25",
+    "category": "SCAN",
+    "title": "#EGLD/INR  \u20b9390.0000  +12.14%",
+    "details": "24h Range: \u20b9349.8600\u2013\u20b9411.6500  |  Spread: 1.92%  |  Why flagged: Strong 24h momentum +12.1% | Volume spike 10.0x above avg | Wide 24h range 17.7% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-EGLD_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:08:25",
+    "category": "EXECUTION",
+    "title": "\ud83d\udccc Tracking Open Trade: #ETH | PnL: \u20b9+2.86 (+1.92%)",
+    "details": "Price: \u20b9252,659.4000 | Entry: \u20b9247,900.0000 | Trailing Stop: \u20b9249,155.7500 | Target TP1: \u20b9253,849.6000. Profit guard active.",
+    "level": "success",
+    "pair": "I-ETH_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:08:25",
+    "category": "EXECUTION",
+    "title": "\ud83d\udccc Tracking Open Trade: #XRP | PnL: \u20b9+0.38 (+0.27%)",
+    "details": "Price: \u20b9141.3780 | Entry: \u20b9140.9990 | Trailing Stop: \u20b9140.0000 | Target TP1: \u20b9144.3800. Profit guard active.",
+    "level": "success",
+    "pair": "I-XRP_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:08:25",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #BTC/INR @ \u20b97,930,000.00 \u2192 HOLD (Score: +45/100)",
+    "details": "RSI(14): 68.8 \u2014 Overbought \u2014 caution \ud83d\udd34. MACD Hist: +7500.898 \u2014 Bullish expanding. Volume: 1.11x. Patterns: Doji (Market Indecision). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-BTC_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:08:25",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #ETH/INR @ \u20b9252,659.40 \u2192 HOLD (Score: +20/100)",
+    "details": "RSI(14): 72.7 \u2014 Overbought \u2014 caution \ud83d\udd34. MACD Hist: +370.939 \u2014 Bullish expanding. Volume: 2.31x. Patterns: No reversal patterns. Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-ETH_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:08:25",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #SOL/INR @ \u20b910,672.20 \u2192 HOLD (Score: +50/100)",
+    "details": "RSI(14): 54.5 \u2014 Neutral range. MACD Hist: +5.597 \u2014 Bullish expanding. Volume: 1.21x. Patterns: Inverted Hammer (Bullish Setup). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-SOL_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:08:25",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #DOGE/INR @ \u20b98.59 \u2192 HOLD (Score: +50/100)",
+    "details": "RSI(14): 51.9 \u2014 Neutral range. MACD Hist: +0.005 \u2014 Bullish expanding. Volume: 2.90x. Patterns: Doji (Market Indecision). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-DOGE_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:09:06",
+    "category": "SURVIVAL",
+    "title": "Health: 100.0% HP | Capital: \u20b91,005.48 (PRUDENT COMPOUNDING \ud83c\udfaf)",
+    "details": "Wallet Equity: \u20b91,005.48 (Net: \u20b9+5.48 / +0.55%). Cash Reserve: \u20b9300.00 safeguarded. Active Positions: 2/2.",
+    "level": "success",
+    "pair": "PORTFOLIO"
+  },
+  {
+    "timestamp": "2026-08-30 22:09:06",
+    "category": "SCAN",
+    "title": "\ud83d\udce1 CoinDCX Scan Complete \u2014 Top Movers: #HNT (+168.6%), #UNI (+19.9%), #TNSR (+19.4%), #EGLD (+12.1%), #SPX (+12.1%)",
+    "details": "Full market sweep done. Top gainers: #HNT (+168.6%), #UNI (+19.9%), #TNSR (+19.4%), #EGLD (+12.1%), #SPX (+12.1%). Highest volume spikes: #HNT 10.0x, #UNI 10.0x, #TNSR 10.0x. Filtering spread <2.5%, 24h turnover >\u20b925K. Applying RSI/MACD/EMA confluence filter before candidate approval.",
+    "level": "info",
+    "pair": "I-HNT_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:09:06",
+    "category": "SCAN",
+    "title": "#HNT/INR  \u20b994.0000  +168.57%",
+    "details": "24h Range: \u20b932.8700\u2013\u20b998.5500  |  Spread: 0.94%  |  Why flagged: Strong 24h momentum +168.6% | Volume spike 10.0x above avg | Wide 24h range 199.8% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-HNT_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:09:06",
+    "category": "SCAN",
+    "title": "#UNI/INR  \u20b9544.1400  +19.92%",
+    "details": "24h Range: \u20b9456.5900\u2013\u20b9544.1400  |  Spread: 1.59%  |  Why flagged: Strong 24h momentum +19.9% | Volume spike 10.0x above avg | Wide 24h range 19.2% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-UNI_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:09:06",
+    "category": "SCAN",
+    "title": "#TNSR/INR  \u20b94.1240  +19.40%",
+    "details": "24h Range: \u20b93.3620\u2013\u20b94.5050  |  Spread: 1.83%  |  Why flagged: Strong 24h momentum +19.4% | Volume spike 10.0x above avg | Wide 24h range 34.0% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-TNSR_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:09:06",
+    "category": "SCAN",
+    "title": "#EGLD/INR  \u20b9390.0000  +12.14%",
+    "details": "24h Range: \u20b9349.8600\u2013\u20b9411.6500  |  Spread: 1.92%  |  Why flagged: Strong 24h momentum +12.1% | Volume spike 10.0x above avg | Wide 24h range 17.7% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-EGLD_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:09:06",
+    "category": "EXECUTION",
+    "title": "\ud83d\udccc Tracking Open Trade: #ETH | PnL: \u20b9+2.86 (+1.92%)",
+    "details": "Price: \u20b9252,659.4000 | Entry: \u20b9247,900.0000 | Trailing Stop: \u20b9249,155.7500 | Target TP1: \u20b9253,849.6000. Profit guard active.",
+    "level": "success",
+    "pair": "I-ETH_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:09:06",
+    "category": "EXECUTION",
+    "title": "\ud83d\udccc Tracking Open Trade: #XRP | PnL: \u20b9+0.38 (+0.27%)",
+    "details": "Price: \u20b9141.3780 | Entry: \u20b9140.9990 | Trailing Stop: \u20b9140.0000 | Target TP1: \u20b9144.3800. Profit guard active.",
+    "level": "success",
+    "pair": "I-XRP_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:09:06",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #BTC/INR @ \u20b97,964,203.40 \u2192 HOLD (Score: +21/100)",
+    "details": "RSI(14): 72.9 \u2014 Overbought \u2014 caution \ud83d\udd34. MACD Hist: +9683.679 \u2014 Bullish expanding. Volume: 1.19x. Patterns: Morning Star (High Probability Bullish). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-BTC_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:09:06",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #ETH/INR @ \u20b9252,659.40 \u2192 HOLD (Score: +16/100)",
+    "details": "RSI(14): 72.7 \u2014 Overbought \u2014 caution \ud83d\udd34. MACD Hist: +370.939 \u2014 Bullish expanding. Volume: 2.31x. Patterns: No reversal patterns. Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-ETH_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:09:06",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #SOL/INR @ \u20b910,737.00 \u2192 HOLD (Score: +46/100)",
+    "details": "RSI(14): 58.9 \u2014 Neutral range. MACD Hist: +9.732 \u2014 Bullish expanding. Volume: 1.21x. Patterns: Bullish Engulfing (Strong Buy). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-SOL_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:09:06",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #DOGE/INR @ \u20b98.59 \u2192 HOLD (Score: +46/100)",
+    "details": "RSI(14): 51.9 \u2014 Neutral range. MACD Hist: +0.005 \u2014 Bullish expanding. Volume: 2.90x. Patterns: Doji (Market Indecision). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-DOGE_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:09:38",
+    "category": "SURVIVAL",
+    "title": "Health: 100.0% HP | Capital: \u20b91,005.48 (PRUDENT COMPOUNDING \ud83c\udfaf)",
+    "details": "Wallet Equity: \u20b91,005.48 (Net: \u20b9+5.48 / +0.55%). Cash Reserve: \u20b9300.00 safeguarded. Active Positions: 2/2.",
+    "level": "success",
+    "pair": "PORTFOLIO"
+  },
+  {
+    "timestamp": "2026-08-30 22:09:38",
+    "category": "SCAN",
+    "title": "\ud83d\udce1 CoinDCX Scan Complete \u2014 Top Movers: #HNT (+172.6%), #UNI (+19.9%), #TNSR (+18.8%), #EGLD (+12.1%), #SPX (+12.1%)",
+    "details": "Full market sweep done. Top gainers: #HNT (+172.6%), #UNI (+19.9%), #TNSR (+18.8%), #EGLD (+12.1%), #SPX (+12.1%). Highest volume spikes: #HNT 10.0x, #UNI 10.0x, #TNSR 10.0x. Filtering spread <2.5%, 24h turnover >\u20b925K. Applying RSI/MACD/EMA confluence filter before candidate approval.",
+    "level": "info",
+    "pair": "I-HNT_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:09:38",
+    "category": "SCAN",
+    "title": "#HNT/INR  \u20b994.6000  +172.62%",
+    "details": "24h Range: \u20b932.8700\u2013\u20b998.5500  |  Spread: 2.12%  |  Why flagged: Strong 24h momentum +172.6% | Volume spike 10.0x above avg | Wide 24h range 199.8% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-HNT_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:09:38",
+    "category": "SCAN",
+    "title": "#UNI/INR  \u20b9544.1400  +19.92%",
+    "details": "24h Range: \u20b9456.5900\u2013\u20b9544.1400  |  Spread: 1.53%  |  Why flagged: Strong 24h momentum +19.9% | Volume spike 10.0x above avg | Wide 24h range 19.2% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-UNI_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:09:38",
+    "category": "SCAN",
+    "title": "#TNSR/INR  \u20b94.1030  +18.79%",
+    "details": "24h Range: \u20b93.3620\u2013\u20b94.5050  |  Spread: 1.66%  |  Why flagged: Strong 24h momentum +18.8% | Volume spike 10.0x above avg | Wide 24h range 34.0% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-TNSR_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:09:38",
+    "category": "SCAN",
+    "title": "#EGLD/INR  \u20b9390.0000  +12.14%",
+    "details": "24h Range: \u20b9349.8600\u2013\u20b9411.6500  |  Spread: 1.90%  |  Why flagged: Strong 24h momentum +12.1% | Volume spike 10.0x above avg | Wide 24h range 17.7% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-EGLD_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:09:38",
+    "category": "EXECUTION",
+    "title": "\ud83d\udccc Tracking Open Trade: #ETH | PnL: \u20b9+2.86 (+1.92%)",
+    "details": "Price: \u20b9252,659.4000 | Entry: \u20b9247,900.0000 | Trailing Stop: \u20b9249,155.7500 | Target TP1: \u20b9253,849.6000. Profit guard active.",
+    "level": "success",
+    "pair": "I-ETH_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:09:38",
+    "category": "EXECUTION",
+    "title": "\ud83d\udccc Tracking Open Trade: #XRP | PnL: \u20b9+0.84 (+0.60%)",
+    "details": "Price: \u20b9141.8410 | Entry: \u20b9140.9990 | Trailing Stop: \u20b9140.0000 | Target TP1: \u20b9144.3800. Profit guard active.",
+    "level": "success",
+    "pair": "I-XRP_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:09:38",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #BTC/INR @ \u20b97,930,000.00 \u2192 HOLD (Score: +41/100)",
+    "details": "RSI(14): 68.8 \u2014 Overbought \u2014 caution \ud83d\udd34. MACD Hist: +7500.898 \u2014 Bullish expanding. Volume: 1.19x. Patterns: Doji (Market Indecision). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-BTC_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:09:38",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #ETH/INR @ \u20b9252,659.40 \u2192 HOLD (Score: +16/100)",
+    "details": "RSI(14): 72.7 \u2014 Overbought \u2014 caution \ud83d\udd34. MACD Hist: +370.939 \u2014 Bullish expanding. Volume: 2.31x. Patterns: No reversal patterns. Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-ETH_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:09:38",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #SOL/INR @ \u20b910,736.10 \u2192 HOLD (Score: +46/100)",
+    "details": "RSI(14): 58.8 \u2014 Neutral range. MACD Hist: +9.675 \u2014 Bullish expanding. Volume: 1.21x. Patterns: Bullish Engulfing (Strong Buy). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-SOL_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:09:38",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #DOGE/INR @ \u20b98.64 \u2192 HOLD (Score: +71/100)",
+    "details": "RSI(14): 58.0 \u2014 Neutral range. MACD Hist: +0.009 \u2014 Bullish expanding. Volume: 2.91x. Patterns: Bullish Engulfing (Strong Buy), Morning Star (High Probability Bullish). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-DOGE_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:10:11",
+    "category": "SURVIVAL",
+    "title": "Health: 100.0% HP | Capital: \u20b91,005.94 (PRUDENT COMPOUNDING \ud83c\udfaf)",
+    "details": "Wallet Equity: \u20b91,005.94 (Net: \u20b9+5.94 / +0.59%). Cash Reserve: \u20b9300.00 safeguarded. Active Positions: 2/2.",
+    "level": "success",
+    "pair": "PORTFOLIO"
+  },
+  {
+    "timestamp": "2026-08-30 22:10:11",
+    "category": "SCAN",
+    "title": "\ud83d\udce1 CoinDCX Scan Complete \u2014 Top Movers: #HNT (+173.3%), #TNSR (+18.8%), #UNI (+18.0%), #EGLD (+12.1%), #SPX (+12.1%)",
+    "details": "Full market sweep done. Top gainers: #HNT (+173.3%), #TNSR (+18.8%), #UNI (+18.0%), #EGLD (+12.1%), #SPX (+12.1%). Highest volume spikes: #HNT 10.0x, #TNSR 10.0x, #UNI 10.0x. Filtering spread <2.5%, 24h turnover >\u20b925K. Applying RSI/MACD/EMA confluence filter before candidate approval.",
+    "level": "info",
+    "pair": "I-HNT_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:10:11",
+    "category": "SCAN",
+    "title": "#HNT/INR  \u20b994.8200  +173.26%",
+    "details": "24h Range: \u20b932.8700\u2013\u20b998.5500  |  Spread: 1.79%  |  Why flagged: Strong 24h momentum +173.3% | Volume spike 10.0x above avg | Wide 24h range 199.8% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-HNT_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:10:11",
+    "category": "SCAN",
+    "title": "#TNSR/INR  \u20b94.1030  +18.79%",
+    "details": "24h Range: \u20b93.3620\u2013\u20b94.5050  |  Spread: 1.97%  |  Why flagged: Strong 24h momentum +18.8% | Volume spike 10.0x above avg | Wide 24h range 34.0% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-TNSR_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:10:11",
+    "category": "SCAN",
+    "title": "#UNI/INR  \u20b9535.5600  +18.03%",
+    "details": "24h Range: \u20b9456.5900\u2013\u20b9544.1400  |  Spread: 1.41%  |  Why flagged: Strong 24h momentum +18.0% | Volume spike 10.0x above avg | Wide 24h range 19.2% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-UNI_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:10:11",
+    "category": "SCAN",
+    "title": "#EGLD/INR  \u20b9390.0000  +12.14%",
+    "details": "24h Range: \u20b9349.8600\u2013\u20b9411.6500  |  Spread: 1.81%  |  Why flagged: Strong 24h momentum +12.1% | Volume spike 10.0x above avg | Wide 24h range 17.7% \u2014 volatility opportunity",
+    "level": "success",
+    "pair": "I-EGLD_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:10:11",
+    "category": "EXECUTION",
+    "title": "\ud83d\udccc Tracking Open Trade: #ETH | PnL: \u20b9+2.33 (+1.56%)",
+    "details": "Price: \u20b9251,777.9000 | Entry: \u20b9247,900.0000 | Trailing Stop: \u20b9249,155.7500 | Target TP1: \u20b9253,849.6000. Profit guard active.",
+    "level": "success",
+    "pair": "I-ETH_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:10:11",
+    "category": "EXECUTION",
+    "title": "\ud83d\udccc Tracking Open Trade: #XRP | PnL: \u20b9+0.38 (+0.27%)",
+    "details": "Price: \u20b9141.3830 | Entry: \u20b9140.9990 | Trailing Stop: \u20b9140.0000 | Target TP1: \u20b9144.3800. Profit guard active.",
+    "level": "success",
+    "pair": "I-XRP_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:10:11",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #BTC/INR @ \u20b97,963,256.30 \u2192 HOLD (Score: +21/100)",
+    "details": "RSI(14): 72.8 \u2014 Overbought \u2014 caution \ud83d\udd34. MACD Hist: +9623.237 \u2014 Bullish expanding. Volume: 1.20x. Patterns: Morning Star (High Probability Bullish). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-BTC_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:10:11",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #ETH/INR @ \u20b9252,659.40 \u2192 HOLD (Score: +16/100)",
+    "details": "RSI(14): 72.7 \u2014 Overbought \u2014 caution \ud83d\udd34. MACD Hist: +370.939 \u2014 Bullish expanding. Volume: 2.32x. Patterns: No reversal patterns. Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-ETH_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:10:11",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #SOL/INR @ \u20b910,729.80 \u2192 HOLD (Score: +46/100)",
+    "details": "RSI(14): 58.4 \u2014 Neutral range. MACD Hist: +9.273 \u2014 Bullish expanding. Volume: 1.21x. Patterns: Bullish Engulfing (Strong Buy). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-SOL_INR"
+  },
+  {
+    "timestamp": "2026-08-30 22:10:11",
+    "category": "DECISION",
+    "title": "\ud83d\udd0d #DOGE/INR @ \u20b98.64 \u2192 HOLD (Score: +71/100)",
+    "details": "RSI(14): 58.0 \u2014 Neutral range. MACD Hist: +0.009 \u2014 Bullish expanding. Volume: 2.92x. Patterns: Bullish Engulfing (Strong Buy), Morning Star (High Probability Bullish). Required score: 30. Decision: HOLD.",
+    "level": "info",
+    "pair": "I-DOGE_INR"
+  }
+]

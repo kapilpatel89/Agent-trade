@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "nexus-crypto-agent": {
+      "command": "python",
+      "args": ["E:/Agent trading/mcp_server.py"],
+      "env": {
+        "PYTHONIOENCODING": "utf-8"
+      }
+    }
+  }
+}
