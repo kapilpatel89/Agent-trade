@@ -116,10 +116,15 @@ class CoinDCXClient:
             return []
 
     def get_market_detail(self, symbol_or_market: str) -> Optional[Dict[str, Any]]:
-        """Get details for a specific market like BTCINR or I-BTC_INR."""
+        """Get details for a specific market like BTCINR, BTC, or I-BTC_INR."""
         details = self.get_markets_details()
+        clean = symbol_or_market.upper().replace("#", "").replace("/INR", "").replace("INR", "")
         for m in details:
             if m.get("symbol") == symbol_or_market or m.get("coindcx_name") == symbol_or_market or m.get("pair") == symbol_or_market:
+                return m
+            if m.get("base_currency_short_name") == "INR" and m.get("target_currency_short_name") == clean:
+                return m
+            if m.get("coindcx_name") == f"{clean}INR":
                 return m
         return None
 

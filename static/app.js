@@ -1259,3 +1259,17 @@ async function triggerRadarAlert(alertType) {
   }
 }
 
+// --------------------------------------------------------------------------
+// RADAR & INTERACTIVE ALERT BUTTON BINDINGS
+// --------------------------------------------------------------------------
+document.getElementById("btn-open-radar")?.addEventListener("click", openRadarModal);
+document.getElementById("radar-modal-close-btn")?.addEventListener("click", closeRadarModal);
+document.getElementById("btn-close-radar-foot")?.addEventListener("click", closeRadarModal);
+
+document.getElementById("btn-trigger-overlap-alert")?.addEventListener("click", () => triggerRadarAlert("seller_overlap"));
+document.getElementById("btn-trigger-war-alert")?.addEventListener("click", () => triggerRadarAlert("war_news"));
+document.getElementById("btn-trigger-corr-alert")?.addEventListener("click", () => triggerRadarAlert("correlation"));
+document.getElementById("btn-trigger-buy-buttons-alert")?.addEventListener("click", () => triggerRadarAlert("buy_buttons"));
+document.getElementById("btn-trigger-sell-buttons-alert")?.addEventListener("click", () => triggerRadarAlert("sell_buttons"));
+
+

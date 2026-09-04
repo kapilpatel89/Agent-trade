@@ -251,7 +251,33 @@ def trigger_radar_test_alert(payload: Optional[RadarAlertTestRequest] = None):
             stop_loss=13900.0
         )
         return {"success": True, "message": "Triggered Telegram alert: 'SOL Sympathy Catch-up Opportunity'"}
-    
+
+    elif alert_type == "buy_buttons":
+        engine.telegram.send_buy_alert({
+            "symbol": "BTC",
+            "quantity": 0.0015,
+            "entry_price": 5420000.0,
+            "cost_inr": 8130.0,
+            "stop_loss_price": 5250000.0,
+            "take_profit_1": 5630000.0,
+            "take_profit_2": 5850000.0,
+            "thesis": "Orderbook absorption breakout confirmation with high volume."
+        }, engine.trading_mode)
+        return {"success": True, "message": "Triggered Telegram Buy Alert with interactive SELL and Positions buttons"}
+
+    elif alert_type == "sell_buttons":
+        engine.telegram.send_sell_alert({
+            "symbol": "SOL",
+            "entry_price": 13800.0,
+            "exit_price": 14650.0,
+            "net_pnl_inr": 850.0,
+            "net_pnl_pct": 6.16,
+            "net_return_inr": 14650.0,
+            "fees_inr": 181.0,
+            "exit_reason": "Take Profit 1 (+6.16%) Reached"
+        }, engine.get_total_equity(), engine.trading_mode)
+        return {"success": True, "message": "Triggered Telegram Sell Alert with interactive Opportunities and Status buttons"}
+
     return {"success": False, "message": f"Unknown alert type: {alert_type}"}
 
 @app.get("/api/telegram/status")

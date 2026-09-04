@@ -630,3 +630,78 @@ class TradingEngine:
                 "message": f"Failed to execute trade for #{symbol}. Check position limits or cash balance."
             }
 
+    def manual_buy_symbol(self, symbol: str) -> Dict[str, Any]:
+        """
+        Execute manual or 1-tap Buy order for a symbol (e.g. BTC, SOL, DOGE).
+        """
+        clean_sym = symbol.strip().upper().replace("#", "").replace("/INR", "").replace("INR", "")
+        market_detail = self.coindcx.get_market_detail(clean_sym)
+        if not market_detail:
+            return {"success": False, "message": f"Coin #{clean_sym} / INR market not found on CoinDCX."}
+
+        market = market_detail.get("coindcx_name") or f"{clean_sym}INR"
+        pair = market_detail.get("pair") or market_detail.get("symbol") or market
+
+        # Fetch live price
+        ticker = self.coindcx.get_ticker_by_market(market)
+        price = float(ticker.get("last_price", 0) or 0) if ticker else 0.0
+        if price <= 0:
+            return {"success": False, "message": f"Unable to fetch live price for #{clean_sym}."}
+
+        stop_loss = round(price * 0.96, 2)
+        tp1 = round(price * 1.04, 2)
+        tp2 = round(price * 1.08, 2)
+
+        decision = {
+            "pair": pair,
+            "market": market,
+            "symbol": clean_sym,
+            "action": "BUY",
+            "confidence": 85,
+            "composite_score": 60,
+            "current_price": price,
+            "stop_loss_price": stop_loss,
+            "take_profit_1": tp1,
+            "take_profit_2": tp2,
+            "thesis": f"Manual Telegram command trigger for #{clean_sym} / INR."
+        }
+
+        success = self.execute_buy(decision, market_detail)
+        if success:
+            self.save_state()
+            return {
+                "success": True,
+                "message": f"Executed BUY order for #{clean_sym} at ₹{price:,.2f} INR.",
+                "price": price,
+                "stop_loss": stop_loss,
+                "take_profit": tp1
+            }
+        else:
+            return {
+                "success": False,
+                "message": f"Failed to buy #{clean_sym}. Check capital allocation or position limits."
+            }
+
+    def manual_sell_symbol(self, symbol: str) -> Dict[str, Any]:
+        """
+        Close an existing open position for a symbol (e.g. BTC, SOL, DOGE).
+        """
+        clean_sym = symbol.strip().upper().replace("#", "").replace("/INR", "").replace("INR", "")
+        pos = next((p for p in self.open_positions if p.get("symbol", "").upper() == clean_sym), None)
+        if not pos:
+            return {"success": False, "message": f"No open position found for #{clean_sym}."}
+
+        market = pos["market"]
+        ticker = self.coindcx.get_ticker_by_market(market)
+        price = float(ticker.get("last_price", 0) or 0) if ticker else float(pos.get("current_price", pos["entry_price"]))
+
+        success = self.execute_sell(pos, price, "Manual Telegram Sell Command")
+        if success:
+            return {
+                "success": True,
+                "message": f"Successfully closed position for #{clean_sym} at ₹{price:,.2f} INR.",
+                "price": price
+            }
+        else:
+            return {"success": False, "message": f"Failed to execute sell for #{clean_sym}."}
+
