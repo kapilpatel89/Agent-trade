@@ -258,6 +258,50 @@ class TelegramNotifier:
         )
         self.send_message(msg)
 
+    def send_orderbook_watchout_alert(self, symbol: str, status: str, ask_pct: float, bid_pct: float, message: str):
+        """Send smart Buyer/Seller Orderbook Watchout alert (e.g. Seller Overlapping Buyer)."""
+        is_danger = "SELLER" in status.upper() or "OVERLAP" in status.upper()
+        icon = "🚨" if is_danger else "🛡️"
+        tag = "SELLER OVERLAPPING BUYER" if is_danger else "BUYER ABSORBING SELLER"
+
+        msg = (
+            f"{icon} <b>MARKET DEPTH WATCHOUT: #{symbol}</b>\n"
+            f"━━━━━━━━━━━━━━━━━━\n"
+            f"⚡ <b>Condition:</b> <b>{tag}</b>\n"
+            f"📊 <b>Orderbook Depth:</b> {ask_pct:.0f}% Asks vs {bid_pct:.0f}% Bids\n"
+            f"📉 <b>Dynamic:</b> <i>{message}</i>\n"
+            f"🎯 <b>Action:</b> {'Tighten trailing stops / avoid buying' if is_danger else 'Support holding firmly / bounce setup'}\n"
+            f"⏱️ <i>{time.strftime('%Y-%m-%d %H:%M:%S')}</i>"
+        )
+        self.send_message(msg)
+
+    def send_social_war_news_alert(self, headline: str, threat_level: int, bias: str, down_prob: int, advice: str):
+        """Send Geopolitical War News & Social Media (X.com) narrative alert."""
+        msg = (
+            f"⚔️ <b>WAR / GEOPOLITICAL NEWS SPREADING (X.COM)</b>\n"
+            f"━━━━━━━━━━━━━━━━━━\n"
+            f"📰 <b>Headline:</b> <i>{headline}</i>\n"
+            f"⚠️ <b>Macro Threat Level:</b> <b>{threat_level}/100</b>\n"
+            f"📉 <b>Market Bias:</b> {bias} ({down_prob}% downside probability)\n"
+            f"🛡️ <b>Protective Strategy:</b> <i>{advice}</i>\n"
+            f"⏱️ <i>{time.strftime('%Y-%m-%d %H:%M:%S')}</i>"
+        )
+        self.send_message(msg)
+
+    def send_correlation_opportunity_alert(self, lead_coin: str, target_coin: str, lag_pct: float, target_price: float, stop_loss: float):
+        """Send Inter-Asset Relation / Sympathy Lag Opportunity alert."""
+        msg = (
+            f"🔗 <b>RELATION TRADE OPPORTUNITY</b>\n"
+            f"━━━━━━━━━━━━━━━━━━\n"
+            f"🚀 <b>Lead Driver:</b> #{lead_coin} Breaking Out\n"
+            f"⏳ <b>Lagging Follower:</b> #{target_coin} (Lag gap: <b>+{lag_pct:.2f}%</b>)\n"
+            f"🎯 <b>Catch-up Target:</b> ₹{target_price:,.2f}\n"
+            f"🛑 <b>Stop Loss:</b> ₹{stop_loss:,.2f}\n"
+            f"🧠 <b>Thesis:</b> High probability sympathy rally as liquidity rotates from #{lead_coin} to #{target_coin}.\n"
+            f"⏱️ <i>{time.strftime('%Y-%m-%d %H:%M:%S')}</i>"
+        )
+        self.send_message(msg)
+
     # ==========================================
     # INTERACTIVE COMMAND LISTENER
     # ==========================================
@@ -309,13 +353,16 @@ class TelegramNotifier:
             reply = (
                 f"⚡ <b>Nexus Crypto Survival Agent Bot</b> ⚡\n"
                 f"Connected to CoinDCX Autonomous Intelligence.\n\n"
-                f"<b>Available Commands:</b>\n"
-                f"• /status - View portfolio, health %, and Net PnL\n"
-                f"• /positions - View all active open trades\n"
-                f"• /scan - View top gainers & volume movers on CoinDCX\n"
+                f"<b>Core Portfolio Commands:</b>\n"
+                f"• /status - Portfolio equity, health %, and Net PnL\n"
+                f"• /positions - Active open trades & trailing stops\n"
+                f"• /scan - Top gainers & volume leaders on CoinDCX\n"
                 f"• /cycle - Run immediate analysis & trading cycle\n"
-                f"• /news - View macro conflict threat radar\n"
-                f"• /liquidate - 🚨 Emergency close all to INR cash\n"
+                f"• /liquidate - 🚨 Emergency close all to INR cash\n\n"
+                f"<b>🧠 Smart Market Radar Commands:</b>\n"
+                f"• /watchouts - Buyer vs. Seller depth & Overlapping warnings\n"
+                f"• /relations - Correlated sympathy & BTC lag opportunities\n"
+                f"• /radar - Social Media (X.com) & Geopolitical War Intelligence\n"
             )
             self.send_message(reply)
 
@@ -372,21 +419,59 @@ class TelegramNotifier:
                 )
             self.send_message("\n".join(reply_lines))
 
+        elif cmd in ["/watchouts", "/depth"]:
+            radar_data = engine.radar.build_radar_overview(force_refresh=True)
+            w_list = radar_data.get("orderbook_watchouts", [])
+            reply_lines = ["🐋 <b>BUYER VS. SELLER ORDERBOOK DEPTH:</b>\n━━━━━━━━━━━━━━━━━━"]
+            for ob in w_list:
+                status_icon = "🚨" if ob["overlap_flag"] else ("🛡️" if ob["absorption_flag"] else "⚖️")
+                reply_lines.append(
+                    f"{status_icon} <b>#{ob['symbol']}</b>: {ob['status']}\n"
+                    f"  Depth: <b>{ob['bid_pressure_pct']}% Bids</b> vs <b>{ob['ask_pressure_pct']}% Asks</b>\n"
+                    f"  <i>{ob['summary']}</i>\n"
+                )
+            self.send_message("\n".join(reply_lines))
+
+        elif cmd in ["/relations", "/correlation", "/sympathy"]:
+            radar_data = engine.radar.build_radar_overview(force_refresh=True)
+            rel_list = radar_data.get("relation_trades", [])
+            if not rel_list:
+                self.send_message("🔗 <b>Correlations Steady:</b> No extreme sympathy lag gaps detected right now.")
+                return
+
+            reply_lines = ["🔗 <b>INTER-COIN RELATION & SYMPATHY SETUPS:</b>\n━━━━━━━━━━━━━━━━━━"]
+            for r in rel_list:
+                icon = "🚀" if r["signal"] == "BUY" else "⚠️"
+                reply_lines.append(
+                    f"{icon} <b>#{r['symbol']}</b> (Lag vs BTC: {r['lag_pct']:+.2f}%)\n"
+                    f"  Current: ₹{r['current_price']:,.2f} -> Target: ₹{r['target_price']:,.2f} (+{r.get('expected_return_pct', 0)}%)\n"
+                    f"  <i>{r['headline']}</i>\n"
+                )
+            self.send_message("\n".join(reply_lines))
+
+        elif cmd in ["/radar", "/news", "/sentiment"]:
+            data = engine.brain.news_engine.analyze(force_refresh=True)
+            direction = data.get("direction_probability", {})
+            bias_text = direction.get("bias", "NEUTRAL")
+            down_p = direction.get("down_prob", 50)
+            up_p = direction.get("up_prob", 50)
+
+            reply = (
+                f"🌍 <b>GEOPOLITICAL WAR & SOCIAL (X.COM) RADAR</b>\n"
+                f"━━━━━━━━━━━━━━━━━━\n"
+                f"⚠️ <b>Threat Level:</b> {data['threat_level']}/100 ({data['threat_status']})\n"
+                f"📈 <b>Crypto Sentiment:</b> {data['crypto_sentiment']:+d} ({data['sentiment_label']})\n"
+                f"🎯 <b>Direction Forecast:</b> <b>{bias_text}</b>\n"
+                f"  • Downside Risk: {down_p}%\n"
+                f"  • Upside Momentum: {up_p}%\n"
+                f"📝 <b>Social Narrative:</b> <i>{data.get('social_summary', 'Normal feeds')}</i>\n"
+            )
+            self.send_message(reply)
+
         elif cmd in ["/cycle"]:
             self.send_message("⏳ <i>Executing autonomous cycle on CoinDCX...</i>")
             res = engine.run_cycle()
             self.send_message(f"✅ <b>Cycle Completed!</b> Total Equity: ₹{res.get('equity', engine.get_total_equity()):,.2f}")
-
-        elif cmd in ["/news"]:
-            data = engine.brain.news_engine.analyze(force_refresh=True)
-            reply = (
-                f"🌍 <b>GEOPOLITICAL & CRYPTO RADAR:</b>\n"
-                f"━━━━━━━━━━━━━━━━━━\n"
-                f"⚠️ <b>Threat Level:</b> {data['threat_level']}/100 ({data['threat_status']})\n"
-                f"📈 <b>Crypto Sentiment:</b> {data['crypto_sentiment']:+d} ({data['sentiment_label']})\n"
-                f"📰 <b>Articles Scanned:</b> {data['total_articles_scanned']}\n"
-            )
-            self.send_message(reply)
 
         elif cmd in ["/liquidate"]:
             closed = engine.emergency_liquidate_all()

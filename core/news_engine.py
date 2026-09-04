@@ -14,24 +14,33 @@ class NewsAndConflictEngine:
     # Keyword Dictionaries for Risk & Sentiment Scoring
     SEVERE_CRISIS_KEYWORDS = {
         "nuclear strike": 35, "world war": 30, "ww3": 30, "full-scale invasion": 25,
-        "martial law declared": 25, "military draft": 20, "emergency defense": 20
+        "martial law declared": 25, "military draft": 20, "emergency defense": 20,
+        "retaliatory strike": 22, "air defense activated": 20, "war declared": 30
     }
 
     CONFLICT_KEYWORDS = {
         "missile strike": 12, "airstrike": 10, "drone attack": 10, "military clash": 10,
         "escalation": 8, "sanctions": 6, "tensions": 4, "hostilities": 8, "oil crisis": 8,
-        "blockade": 8, "conflict": 5
+        "blockade": 8, "conflict": 5, "war news": 10, "strait of hormuz": 12, "middle east war": 12,
+        "frontline": 8, "ceasefire collapsed": 12, "defense alert": 9
+    }
+
+    SOCIAL_VIRAL_KEYWORDS = {
+        "trending on x": 8, "x.com": 8, "twitter": 6, "viral panic": 12, "panic selling": 14,
+        "fud spreading": 10, "breaking report": 8, "insider leak": 8, "whale alert": 8,
+        "short squeeze": 10, "diamond hands": 6, "crypto twitter": 7
     }
 
     BEARISH_CRYPTO_KEYWORDS = {
         "sec lawsuit": 10, "hack": 12, "exploit": 10, "ban": 10, "crackdown": 8,
-        "insolvency": 15, "fraud": 10, "dump": 8, "crash": 8, "liquidation spike": 8
+        "insolvency": 15, "fraud": 10, "dump": 8, "crash": 8, "liquidation spike": 8,
+        "tariff": 8, "rate hike": 10, "inflation surge": 8, "outflow": 8, "delisting": 10
     }
 
     BULLISH_CRYPTO_KEYWORDS = {
         "etf approval": 15, "etf inflow": 12, "all-time high": 12, "ath": 10, "breakout": 10,
         "rate cut": 12, "stimulus": 12, "adoption": 8, "institutional inflow": 10, "surge": 8,
-        "rally": 8, "partnership": 6
+        "rally": 8, "partnership": 6, "fed pivot": 10, "sovereign reserve": 14, "buying spree": 10
     }
 
     def __init__(self):
@@ -217,13 +226,66 @@ class NewsAndConflictEngine:
         else:
             sentiment_label = "NEUTRAL"
 
+        # Social Media & Geopolitical Market Direction Forecast
+        social_buzz_alerts = []
+        if threat_level >= 50:
+            social_buzz_alerts.append({
+                "source": "X.com & Global Feeds",
+                "tag": "GEOPOLITICAL_RISK",
+                "headline": "War conflict & defense escalation headlines spreading",
+                "market_impact": "Downside risk elevated. Flight to safety (Cash/Gold); crypto liquidity contraction.",
+                "suggested_action": "Tighten trailing stops, hold safe INR cash, avoid high-leverage altcoins."
+            })
+        elif crypto_sentiment >= 25:
+            social_buzz_alerts.append({
+                "source": "Crypto Twitter / X.com",
+                "tag": "BULLISH_MOMENTUM",
+                "headline": "Institutional inflows & ETF accumulation trending high",
+                "market_impact": "Crypto market upside bias strong. Dip-buying high probability.",
+                "suggested_action": "Scan for correlated breakout plays; accumulate high-beta leaders."
+            })
+        elif crypto_sentiment <= -25:
+            social_buzz_alerts.append({
+                "source": "Social Media (X.com)",
+                "tag": "PANIC_FEAR",
+                "headline": "Macro uncertainty & seller pressure trending",
+                "market_impact": "Market possibly going down. Bids thinning out.",
+                "suggested_action": "Bunker / defensive stance. Only enter high-confidence buyer-supported setups."
+            })
+        else:
+            social_buzz_alerts.append({
+                "source": "Social & Macro Feeds",
+                "tag": "NEUTRAL_RANGE",
+                "headline": "Balanced consolidation across social narratives",
+                "market_impact": "Range-bound sideways market. Good for mean-reversion & selective scalp plays.",
+                "suggested_action": "Prudent position sizing with disciplined ATR stops."
+            })
+
+        # Calculate Directional Probability
+        down_prob = min(85, max(15, int(45 + (threat_level * 0.4) - (crypto_sentiment * 0.3))))
+        up_prob = 100 - down_prob
+        market_bias = "DOWNWARD_BIAS" if down_prob > 55 else ("UPWARD_BIAS" if up_prob > 55 else "NEUTRAL_CONSOLIDATION")
+
+        social_summary = (
+            f"Social media (X.com) radar: {breaking_alerts[0]['title'] if breaking_alerts else 'Macro sentiment steady'}. "
+            f"Directional forecast: {market_bias} (Down: {down_prob}% | Up: {up_prob}%)."
+        )
+
         return {
             "threat_level": threat_level,
             "threat_status": threat_status,
             "crypto_sentiment": crypto_sentiment,
             "sentiment_label": sentiment_label,
             "breaking_alerts": breaking_alerts[:5],
+            "social_buzz_alerts": social_buzz_alerts,
+            "social_summary": social_summary,
+            "direction_probability": {
+                "down_prob": down_prob,
+                "up_prob": up_prob,
+                "bias": market_bias
+            },
             "total_articles_scanned": len(articles),
             "articles": tagged_articles[:20],
             "last_updated": time.strftime("%Y-%m-%d %H:%M:%S")
         }
+

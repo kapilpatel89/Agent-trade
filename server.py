@@ -66,6 +66,12 @@ class ManualTradeRequest(BaseModel):
     side: str  # "buy" or "sell"
     position_id: Optional[str] = None
 
+class OpportunityExecutionRequest(BaseModel):
+    opportunity_id: str
+
+class RadarAlertTestRequest(BaseModel):
+    alert_type: str = "seller_overlap"  # "seller_overlap", "war_news", "correlation"
+
 # ==========================================
 # REST API ENDPOINTS
 # ==========================================
@@ -185,6 +191,68 @@ def reset_wallet(payload: Optional[Dict[str, float]] = None):
 def get_market_movers(force_refresh: bool = False):
     """Get live scanned top gainers, volume leaders, and high-opportunity coins."""
     return engine.scanner.scan_all_inr_markets(force_refresh=force_refresh)
+
+@app.get("/api/radar/overview")
+def get_radar_overview(force_refresh: bool = False):
+    """Get comprehensive Market Radar overview with orderbook depth, correlation, live sticks, and sentiment."""
+    return engine.radar.build_radar_overview(force_refresh=force_refresh)
+
+@app.get("/api/radar/opportunities")
+def get_radar_opportunities(category: str = "all"):
+    """
+    Get categorized trade opportunities.
+    Filters: all | correlation | orderbook | news_social | momentum | live_sticks
+    """
+    radar = engine.radar.build_radar_overview()
+    all_opps = radar.get("opportunities", [])
+    if category == "all" or not category:
+        return {"category": "all", "total": len(all_opps), "opportunities": all_opps}
+    
+    filtered = [o for o in all_opps if o.get("category") == category]
+    return {"category": category, "total": len(filtered), "opportunities": filtered}
+
+@app.post("/api/trades/execute-opportunity")
+def execute_opportunity(payload: OpportunityExecutionRequest):
+    """1-Click execution for an opportunity identified by the Market Radar."""
+    res = engine.execute_opportunity_trade(payload.opportunity_id)
+    return res
+
+@app.post("/api/radar/test-alert")
+def trigger_radar_test_alert(payload: Optional[RadarAlertTestRequest] = None):
+    """Trigger an instant smart Telegram alert (Seller Overlap, War News, or Correlation Opportunity)."""
+    alert_type = payload.alert_type if payload else "seller_overlap"
+    
+    if alert_type == "seller_overlap":
+        engine.telegram.send_orderbook_watchout_alert(
+            symbol="BTC",
+            status="SELLER_OVERLAPPING_BUYER",
+            ask_pct=73.5,
+            bid_pct=26.5,
+            message="Ask walls actively pressing down into bid levels. Large sell blocks consuming buyers."
+        )
+        return {"success": True, "message": "Triggered Telegram alert: 'Bitcoin Seller Overlapping Buyer'"}
+    
+    elif alert_type == "war_news":
+        engine.telegram.send_social_war_news_alert(
+            headline="Geopolitical conflict & military defense mobilization spreading on X.com",
+            threat_level=68,
+            bias="DOWNWARD_BIAS",
+            down_prob=76,
+            advice="Capital preservation protocol active. Tighten stops, maintain INR cash reserves."
+        )
+        return {"success": True, "message": "Triggered Telegram alert: 'War News Spreading on X.com'"}
+    
+    elif alert_type == "correlation":
+        engine.telegram.send_correlation_opportunity_alert(
+            lead_coin="BTC",
+            target_coin="SOL",
+            lag_pct=2.45,
+            target_price=14650.0,
+            stop_loss=13900.0
+        )
+        return {"success": True, "message": "Triggered Telegram alert: 'SOL Sympathy Catch-up Opportunity'"}
+    
+    return {"success": False, "message": f"Unknown alert type: {alert_type}"}
 
 @app.get("/api/telegram/status")
 def get_telegram_status():

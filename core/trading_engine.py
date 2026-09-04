@@ -8,6 +8,7 @@ from core.coindcx_client import CoinDCXClient
 from core.survival_manager import SurvivalManager
 from core.agent_brain import AgentBrain
 from core.market_scanner import MarketScanner
+from core.market_radar import MarketRadarEngine
 from core.telegram_notifier import TelegramNotifier
 
 class TradingEngine:
@@ -21,6 +22,7 @@ class TradingEngine:
         self.survival = SurvivalManager(initial_capital=initial_capital)
         self.brain = AgentBrain(survival_manager=self.survival)
         self.scanner = MarketScanner(client=self.coindcx)
+        self.radar = MarketRadarEngine(client=self.coindcx, news_engine=self.brain.news_engine)
         self.telegram = TelegramNotifier(bot_token=config.TELEGRAM_BOT_TOKEN, chat_id=config.TELEGRAM_CHAT_ID)
 
         # Settings
@@ -38,6 +40,8 @@ class TradingEngine:
         self.latest_decisions: List[Dict[str, Any]] = []
         self.latest_stance: Dict[str, Any] = {}
         self.latest_movers: Dict[str, Any] = {}
+        self.latest_radar: Dict[str, Any] = {}
+        self.alert_cooldowns: Dict[str, float] = {}  # Throttle Telegram alerts
 
         # Load persisted state if exists
         self.load_state()
@@ -470,7 +474,42 @@ class TradingEngine:
                 top_movers=scanned_data.get("top_gainers", [])
             )
 
-            # 8. Execute Authorized BUYs (if any and risk allows)
+            # 8. Build Comprehensive Market Radar & Trade Opportunities
+            radar_data = self.radar.build_radar_overview()
+            self.latest_radar = radar_data
+
+            # 9. Smart Telegram Alerts with Throttling Cooldown (15 minutes per alert type)
+            now_ts = time.time()
+            for w in radar_data.get("orderbook_watchouts", []):
+                sym = w["symbol"]
+                if w.get("overlap_flag"):
+                    cooldown_key = f"overlap_{sym}"
+                    if now_ts - self.alert_cooldowns.get(cooldown_key, 0) > 900:  # 15 min cooldown
+                        self.alert_cooldowns[cooldown_key] = now_ts
+                        self.telegram.send_orderbook_watchout_alert(
+                            symbol=sym,
+                            status=w["status"],
+                            ask_pct=w["ask_pressure_pct"],
+                            bid_pct=w["bid_pressure_pct"],
+                            message=w["summary"]
+                        )
+
+            # Check for Macro War / Geopolitical Social Spikes
+            if news_analysis.get("threat_level", 0) >= 55:
+                cooldown_key = "war_news_alert"
+                if now_ts - self.alert_cooldowns.get(cooldown_key, 0) > 1800:  # 30 min cooldown
+                    self.alert_cooldowns[cooldown_key] = now_ts
+                    social_sb = news_analysis.get("social_buzz_alerts", [{}])[0]
+                    dir_info = news_analysis.get("direction_probability", {})
+                    self.telegram.send_social_war_news_alert(
+                        headline=social_sb.get("headline", "War headlines spreading on social feeds"),
+                        threat_level=news_analysis["threat_level"],
+                        bias=dir_info.get("bias", "DOWNWARD_BIAS"),
+                        down_prob=dir_info.get("down_prob", 70),
+                        advice=social_sb.get("suggested_action", "Hold cash in INR, tighten stops.")
+                    )
+
+            # 10. Execute Authorized BUYs (if any and risk allows)
             if stance_info["stance"] != SurvivalManager.STANCE_BUNKER:
                 buy_candidates = [d for d in decisions if d.get("action") == "BUY"]
                 # Sort by composite score / confidence descending
@@ -481,7 +520,7 @@ class TradingEngine:
                         market_detail = self.coindcx.get_market_detail(cand["market"])
                         self.execute_buy(cand, market_detail)
 
-            # 9. Save State
+            # 11. Save State
             self.save_state()
 
             return {
@@ -492,7 +531,8 @@ class TradingEngine:
                 "news": news_analysis,
                 "decisions": decisions,
                 "open_positions": self.open_positions,
-                "movers": scanned_data
+                "movers": scanned_data,
+                "radar": radar_data
             }
 
         except Exception as e:
@@ -533,3 +573,60 @@ class TradingEngine:
         self.is_running = False
         self.telegram.stop_command_listener()
         print("[TradingEngine] Background autonomous trading loop stopped.")
+
+    def execute_opportunity_trade(self, opportunity_id: str) -> Dict[str, Any]:
+        """
+        1-Click Execution for an identified Trade Opportunity (Correlation, Orderbook, Live Stick, etc.).
+        """
+        radar_opps = self.latest_radar.get("opportunities", [])
+        if not radar_opps:
+            radar_data = self.radar.build_radar_overview()
+            radar_opps = radar_data.get("opportunities", [])
+
+        target_opp = next((o for o in radar_opps if o.get("id") == opportunity_id), None)
+        if not target_opp:
+            return {"success": False, "message": f"Opportunity '{opportunity_id}' not found or expired."}
+
+        market = target_opp["market"]
+        symbol = target_opp["symbol"]
+        pair = target_opp["pair"]
+        price = float(target_opp.get("current_price", 0) or 0)
+        target_price = float(target_opp.get("target_price", price * 1.04) or (price * 1.04))
+        stop_price = float(target_opp.get("stop_loss_price", price * 0.98) or (price * 0.98))
+
+        if price <= 0:
+            # Refresh price from ticker
+            t = self.coindcx.get_ticker_by_market(market)
+            if t:
+                price = float(t.get("last_price", 0) or 0)
+
+        decision = {
+            "pair": pair,
+            "market": market,
+            "symbol": symbol,
+            "action": "BUY",
+            "confidence": target_opp.get("confidence", 80),
+            "composite_score": 50,
+            "ta_score": 40,
+            "current_price": price,
+            "stop_loss_price": stop_price,
+            "take_profit_1": target_price,
+            "take_profit_2": round(price * 1.06, 2),
+            "thesis": f"[{target_opp.get('category_label', 'OPPORTUNITY')}] {target_opp.get('headline')}. {target_opp.get('narrative')[:120]}"
+        }
+
+        market_detail = self.coindcx.get_market_detail(market)
+        success = self.execute_buy(decision, market_detail)
+        if success:
+            self.save_state()
+            return {
+                "success": True,
+                "message": f"Successfully executed BUY for #{symbol} at ₹{price:,.2f} INR.",
+                "opportunity": target_opp
+            }
+        else:
+            return {
+                "success": False,
+                "message": f"Failed to execute trade for #{symbol}. Check position limits or cash balance."
+            }
+

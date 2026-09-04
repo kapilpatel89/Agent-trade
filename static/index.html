@@ -52,6 +52,9 @@
       </div>
 
       <div class="header-controls">
+        <button id="btn-open-radar" class="btn btn-radar">
+          <span class="radar-live-dot"></span> ⚡ Smart Radar
+        </button>
         <button id="btn-run-cycle" class="btn btn-secondary">
           <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 12a5 5 0 110-10A5 5 0 018 13zM7 5v4l3 1.5-.5 1L6 9V5h1z"/></svg>
           Run Cycle
@@ -153,6 +156,60 @@
           </div>
         </div>
         <div class="hud-card-sub" id="hud-sources-count">Sources: Fetching...</div>
+      </div>
+    </section>
+
+    <!-- BUYER VS SELLER DEPTH & LIVE STICK STRIP -->
+    <section class="radar-summary-strip glass-card" id="radar-summary-strip">
+      <div class="rss-left">
+        <div class="rss-badge-row">
+          <span class="pulse-tag"><span class="radar-live-dot"></span> LIVE DEPTH</span>
+          <span class="rss-status-badge badge-neutral" id="radar-main-status">SCANNING ORDERBOOK DEPTH</span>
+          <span class="rss-time" id="radar-update-time">--:--:--</span>
+        </div>
+        <div class="rss-narrative" id="radar-main-narrative">Connecting to real-time CoinDCX buyer vs seller micro-depth...</div>
+      </div>
+      <div class="rss-right">
+        <!-- Gauge 1: Buyer vs Seller Depth Imbalance -->
+        <div class="depth-gauge-container">
+          <div class="dgc-label">
+            <span class="dgc-bid-lbl">🟢 BUYERS: <strong id="depth-bid-pct">50%</strong></span>
+            <span class="dgc-status" id="depth-status-lbl">DEPTH RATIO</span>
+            <span class="dgc-ask-lbl">🔴 SELLERS: <strong id="depth-ask-pct">50%</strong></span>
+          </div>
+          <div class="depth-split-track">
+            <div class="depth-split-bids" id="depth-bar-bids" style="width:50%"></div>
+            <div class="depth-split-asks" id="depth-bar-asks" style="width:50%"></div>
+          </div>
+        </div>
+        <!-- Gauge 2: Live Stick Wick Micro-Structure -->
+        <div class="stick-summary-card">
+          <div class="ssc-lbl">LIVE STICK (1H)</div>
+          <div class="ssc-val" id="live-stick-badge">Normal Candle</div>
+          <div class="ssc-sub" id="live-stick-detail">Wick: 0% / 0%</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SMART TRADE OPPORTUNITIES & FILTERS -->
+    <section class="opportunities-section glass-card" id="opportunities-section">
+      <div class="card-title-bar opps-title-bar">
+        <div class="opp-title-group">
+          <span class="opp-icon">🎯</span>
+          <h3>SMART TRADE OPPORTUNITIES & RADAR SIGNALS</h3>
+          <span class="count-pill" id="opps-total-badge">0 Found</span>
+        </div>
+        <div class="opp-filter-tabs" id="opp-filter-tabs">
+          <button class="filter-chip active" data-category="all">All Opportunities</button>
+          <button class="filter-chip" data-category="correlation">🔗 Correlated Sympathy</button>
+          <button class="filter-chip" data-category="orderbook">🐋 Buyer/Seller Depth</button>
+          <button class="filter-chip" data-category="news_social">🌍 News & Social (X.com)</button>
+          <button class="filter-chip" data-category="momentum">⚡ Breakout Momentum</button>
+          <button class="filter-chip" data-category="live_sticks">🕯️ Live Stick Reversal</button>
+        </div>
+      </div>
+      <div class="opportunities-grid" id="opportunities-grid">
+        <div class="placeholder-row">Loading active trade opportunities from radar...</div>
       </div>
     </section>
 
@@ -406,6 +463,87 @@
       </div>
     </div>
   </div>
+
+  <!-- SMART RADAR & POPUPS MENU MODAL -->
+  <div class="modal-overlay" id="radar-modal">
+    <div class="modal-box glass-card radar-modal-box">
+      <div class="modal-head">
+        <div class="title-with-badge">
+          <h2>⚡ Smart Radar & Market Micro-Structure</h2>
+          <span class="pulse-tag"><span class="radar-live-dot"></span> LIVE 15S</span>
+        </div>
+        <button class="modal-close-btn" id="radar-modal-close-btn">✕</button>
+      </div>
+      <div class="modal-body">
+        
+        <!-- Radar Section 1: Orderbook Depth & Seller Overlap Warnings -->
+        <div class="radar-modal-section">
+          <div class="rms-head">
+            <span class="rms-icon">🐋</span>
+            <div>
+              <h3>ORDERBOOK BUYER VS. SELLER DEPTH (LIVE TICK TRACKING)</h3>
+              <p>Real-time bid/ask liquidity pressure across core CoinDCX trading pairs.</p>
+            </div>
+          </div>
+          <div class="ob-matrix-grid" id="modal-ob-matrix">
+            <div class="placeholder-row">Loading orderbook depth matrix...</div>
+          </div>
+        </div>
+
+        <!-- Radar Section 2: Inter-Coin Relation & Sympathy Breakouts -->
+        <div class="radar-modal-section">
+          <div class="rms-head">
+            <span class="rms-icon">🔗</span>
+            <div>
+              <h3>INTER-COIN RELATION & SYMPATHY CORRELATION</h3>
+              <p>Bitcoin lead momentum tracking and altcoin lag opportunity setups.</p>
+            </div>
+          </div>
+          <div class="relation-matrix-list" id="modal-relation-matrix">
+            <div class="placeholder-row">Evaluating asset correlation clusters...</div>
+          </div>
+        </div>
+
+        <!-- Radar Section 3: Social Media (X.com) & Geopolitical War Intelligence -->
+        <div class="radar-modal-section">
+          <div class="rms-head">
+            <span class="rms-icon">🌍</span>
+            <div>
+              <h3>SOCIAL MEDIA (X.COM) & GEOPOLITICAL WAR RADAR</h3>
+              <p>Macro news triggers, viral panic/greed spikes, and crypto directional probability.</p>
+            </div>
+          </div>
+          <div class="social-radar-box" id="modal-social-radar">
+            <div class="placeholder-row">Synthesizing macro intelligence...</div>
+          </div>
+        </div>
+
+        <!-- Radar Section 4: Live Telegram Alert Test Triggers -->
+        <div class="radar-modal-section telegram-test-section">
+          <div class="rms-head">
+            <span class="rms-icon">📲</span>
+            <div>
+              <h3>TEST SMART TELEGRAM NOTIFICATIONS</h3>
+              <p>Instantly broadcast narrative watchout alerts to your configured Telegram bot.</p>
+            </div>
+          </div>
+          <div class="alert-triggers-row">
+            <button class="btn btn-xs btn-outline" id="btn-trigger-overlap-alert">🚨 Send Seller Overlap Alert</button>
+            <button class="btn btn-xs btn-outline" id="btn-trigger-war-alert">⚔️ Send War News Alert</button>
+            <button class="btn btn-xs btn-outline" id="btn-trigger-corr-alert">🔗 Send Correlation Alert</button>
+          </div>
+          <div id="radar-alert-feedback" class="hint-text" style="margin-top:8px;"></div>
+        </div>
+
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-primary" id="btn-close-radar-foot">Done / Close Radar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DESKTOP BROWSER POPUPS / TOAST NOTIFICATION CONTAINER -->
+  <div class="toast-popup-container" id="toast-popup-container"></div>
 
   <script src="app.js"></script>
 </body>

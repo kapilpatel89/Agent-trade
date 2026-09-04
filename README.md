@@ -59,11 +59,13 @@ You can send commands directly to your bot on Telegram to query status, inspect 
 
 | Command | Description | Example Telegram Output |
 |---|---|---|
-| `/status` or `/balance` | Instant overview of current equity, cash INR, net PnL %, and active survival stance. | `💎 Total Equity: ₹1,005.32 (Net: +₹5.32 / +0.53%) | Health: 100.0% HP` |
+| `/status` or `/balance` | Instant overview of current equity, cash INR, net PnL %, and active survival stance. | `💎 Total Equity: ₹1,005.32 (Net: +₹5.32 / +0.53%) \| Health: 100.0% HP` |
 | `/positions` | Lists all active trades with entry price, current price, trailing stop, and unrealized gain. | `🪙 #ETH: Qty 0.0006 \| Entry: ₹2,47,900 \| Current: ₹2,51,999 (+1.65%)` |
 | `/scan` or `/movers` | Triggers a live sweep of 340+ CoinDCX INR markets and returns top momentum breakouts. | `🚀 #HNT: +163.79% (₹95.01) \| 24h Vol: ₹4.8L \| Spread: 0.18%` |
+| `/watchouts` or `/depth` | 🐋 Real-time Buyer vs. Seller depth ratios and Overlapping order warnings. | `🚨 #BTC: SELLER OVERLAPPING BUYER \| 74% Asks vs 26% Bids` |
+| `/relations` or `/sympathy` | 🔗 Inter-coin relation & sympathy breakouts (Bitcoin momentum vs altcoin lag). | `🚀 #SOL (Lag vs BTC: +2.45%) \| Current: ₹14,200 -> Target: ₹14,650` |
+| `/radar` or `/news` | 🌍 Social Media (X.com) & Geopolitical War Intelligence snapshot with directional forecast. | `⚠️ Threat Level: 68/100 \| Direction: DOWNWARD_BIAS (76% prob)` |
 | `/cycle` | Forces the trading agent to immediately execute an autonomous scan & evaluation cycle. | `⏳ Executing autonomous cycle on CoinDCX... Cycle Completed!` |
-| `/news` | Fetches the latest Geopolitical Threat Radar and global crypto market sentiment score. | `🌍 Threat Level: 20/100 (LOW_RISK) \| Sentiment: +35 (BULLISH)` |
 | `/liquidate` | 🚨 **Emergency override**: Instantly closes all open positions into 100% safeguarded INR cash. | `🚨 EMERGENCY LIQUIDATION: Closed 2 positions. Secured Cash: ₹1,005.32` |
 | `/start` or `/help` | Displays the interactive command menu and connection status. | *Interactive help and command guide.* |
 
@@ -129,11 +131,23 @@ Monitors account health ($\text{HP}\%$) and peak-to-trough drawdown to dynamical
 - Scrapes live RSS feeds from CoinTelegraph, CoinDesk, Decrypt, and Google World News.
 - Detects macroeconomic stress, regulatory crackdowns, or geopolitical conflict spikes to dynamically raise the **Threat Index (0–100)**.
 
-### 5. ⚡ Trading Engine & Order Guard (`core/trading_engine.py`)
+### 5. ⚡ Market Radar & Orderbook Depth Engine (`core/market_radar.py`)
+- **Buyer vs. Seller Depth**: Calculates top 15 bids vs asks volume and value in real-time. Detects **"Seller Overlapping Buyer"** (ask walls crushing bids) and **"Buyer Absorbing Seller"** (bid wall absorbing dumps).
+- **Ongoing Live Sticks (1H)**: Analyzes forming live candle wick rejections (e.g. upper wick seller rejection vs lower wick hammer absorption).
+- **Inter-Coin Relation Trades**: Tracks Bitcoin (BTC) as the market benchmark and flags sympathy catch-up lag opportunities across Layer 1s, Memes, and DeFi.
+- **Social Media (X.com) & War Radar**: Ingests geopolitical escalation headlines and viral social sentiment to compute directional probabilities (Up % vs Down %).
+- **Smart Opportunities with Instant Filters**: Automatically categorizes setups into `All`, `Correlated Sympathy`, `Buyer/Seller Depth`, `News & Social (X.com)`, `Breakout Momentum`, and `Live Sticks`, with 1-click execution.
+
+![Smart Trade Opportunities & Filters](assets/smart_opportunities_filters.png)
+
+![Smart Radar & Market Micro-Structure Modal](assets/smart_radar_modal.png)
+
+### 6. ⚡ Trading Engine & Order Guard (`core/trading_engine.py`)
 - Manages paper trading simulation and live spot execution via authenticated CoinDCX REST APIs.
 - **TP1 Trigger**: At $+2.5\%$ to $+3.5\%$, locks in profit and moves stop loss to **Breakeven $+0.5\%$**.
 - **TP2 Trigger**: At $+5.0\%$ to $+8.0\%$, executes complete profit exit.
 - **Trailing Stop**: Guards high-water marks, automatically tracking rising prices.
+- **1-Click Opportunity Trades**: Execute directly from any radar opportunity card.
 
 ---
 

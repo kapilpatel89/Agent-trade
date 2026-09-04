@@ -11,6 +11,11 @@ let chartInst   = null;
 let currentFilter = "ALL";
 let isRunning   = false;
 
+// Radar & Opportunities State
+let radarData = null;
+let currentOppCategory = "all";
+let lastSeenPopups = new Set();
+
 const TRACKED_PAIRS = [
   { market:"BTCINR",  pair:"I-BTC_INR",  symbol:"BTC",  name:"Bitcoin"  },
   { market:"ETHINR",  pair:"I-ETH_INR",  symbol:"ETH",  name:"Ethereum" },
@@ -34,6 +39,8 @@ document.addEventListener("DOMContentLoaded", () => {
   setInterval(fullPoll, 4000);
   // Thoughts every 3s
   setInterval(fetchThoughts, 3000);
+  // Market Radar every 5s
+  setInterval(fetchRadar, 5000);
   // Force chart resize after DOM settles
   setTimeout(() => { if (chartInst) { chartInst.resize(); loadChart(activePair); } }, 800);
 
@@ -43,6 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function bootDashboard() {
   await fullPoll();
+  fetchRadar(true);
   fetchMovers(false);
   fetchNews(false);
   // Load chart immediately
@@ -735,6 +743,29 @@ function wireEvents() {
     };
   });
 
+  // Smart Radar Modal
+  document.getElementById("btn-open-radar").onclick = openRadarModal;
+  document.getElementById("radar-modal-close-btn").onclick = closeRadarModal;
+  document.getElementById("btn-close-radar-foot").onclick = closeRadarModal;
+  document.getElementById("radar-modal").addEventListener("click", e => {
+    if (e.target === e.currentTarget) closeRadarModal();
+  });
+
+  // Opportunity Category Filter Chips
+  document.querySelectorAll(".filter-chip").forEach(chip => {
+    chip.onclick = () => {
+      document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
+      chip.classList.add("active");
+      currentOppCategory = chip.getAttribute("data-category") || "all";
+      renderOpportunities();
+    };
+  });
+
+  // Telegram Alert Triggers inside Radar Modal
+  document.getElementById("btn-trigger-overlap-alert").onclick = () => triggerRadarAlert("seller_overlap");
+  document.getElementById("btn-trigger-war-alert").onclick = () => triggerRadarAlert("war_news");
+  document.getElementById("btn-trigger-corr-alert").onclick = () => triggerRadarAlert("correlation");
+
   // Close modal on overlay click
   document.getElementById("config-modal").addEventListener("click", e => {
     if (e.target === e.currentTarget) closeModal();
@@ -866,3 +897,365 @@ function showNotification(msg, type = "info") {
   document.body.appendChild(toast);
   setTimeout(() => toast.remove(), 3500);
 }
+
+// ==========================================================================
+// SMART RADAR & OPPORTUNITIES CONTROLLER
+// ==========================================================================
+
+async function fetchRadar(force = false) {
+  try {
+    const url = `${API}/api/radar/overview${force ? "?force_refresh=true" : ""}`;
+    const r = await fetch(url);
+    const d = await r.json();
+    radarData = d;
+    renderRadarSummaryStrip(d);
+    renderOpportunities();
+    handleUrgentPopups(d.urgent_popups || []);
+    if (document.getElementById("radar-modal").classList.contains("active")) {
+      renderRadarModalContent(d);
+    }
+  } catch(e) {
+    console.error("[Radar] Error fetching radar overview:", e);
+  }
+}
+
+function renderRadarSummaryStrip(data) {
+  if (!data) return;
+  const obList = data.orderbook_watchouts || [];
+  // Find depth for current active pair or default to BTC
+  const ob = obList.find(w => w.pair === activePair) || obList[0] || {};
+  
+  const bidPct = ob.bid_pressure_pct || 50;
+  const askPct = ob.ask_pressure_pct || 50;
+
+  document.getElementById("depth-bid-pct").textContent = `${bidPct}%`;
+  document.getElementById("depth-ask-pct").textContent = `${askPct}%`;
+  document.getElementById("depth-bar-bids").style.width = `${bidPct}%`;
+  document.getElementById("depth-bar-asks").style.width = `${askPct}%`;
+
+  const statusBadge = document.getElementById("radar-main-status");
+  const narrativeEl = document.getElementById("radar-main-narrative");
+  const timeEl      = document.getElementById("radar-update-time");
+
+  if (ob.overlap_flag) {
+    statusBadge.textContent = "🚨 SELLER OVERLAPPING BUYER";
+    statusBadge.className   = "rss-status-badge badge-danger";
+  } else if (ob.absorption_flag) {
+    statusBadge.textContent = "🛡️ BUYER ABSORBING SELLER";
+    statusBadge.className   = "rss-status-badge badge-success";
+  } else {
+    statusBadge.textContent = "⚖️ ORDERBOOK BALANCED";
+    statusBadge.className   = "rss-status-badge badge-neutral";
+  }
+
+  narrativeEl.textContent = ob.summary || "Orderbook depth balanced.";
+  if (data.timestamp) {
+    const parts = data.timestamp.split(" ");
+    timeEl.textContent = parts[1] || data.timestamp;
+  }
+
+  // Live Stick (1h)
+  const sticks = data.live_sticks || [];
+  const stick = sticks.find(s => s.symbol === activeSymbol) || sticks[0];
+  const stickBadge  = document.getElementById("live-stick-badge");
+  const stickDetail = document.getElementById("live-stick-detail");
+
+  if (stick) {
+    if (stick.status === "BEARISH_WICK") {
+      stickBadge.textContent = "🔴 Seller Wick Rejection";
+      stickBadge.style.color = "var(--red)";
+    } else if (stick.status === "BULLISH_WICK") {
+      stickBadge.textContent = "🟢 Buyer Hammer Absorption";
+      stickBadge.style.color = "var(--green)";
+    } else if (stick.status === "BULL_BODY") {
+      stickBadge.textContent = "🚀 Bull Candle Expansion";
+      stickBadge.style.color = "var(--green)";
+    } else if (stick.status === "BEAR_BODY") {
+      stickBadge.textContent = "⚠️ Bearish Dump Expansion";
+      stickBadge.style.color = "var(--red)";
+    } else {
+      stickBadge.textContent = "⚖️ Standard Formation";
+      stickBadge.style.color = "var(--cyan)";
+    }
+    stickDetail.textContent = `Upper ${stick.upper_wick_pct}% | Lower ${stick.lower_wick_pct}%`;
+  }
+}
+
+function renderOpportunities() {
+  if (!radarData || !radarData.opportunities) return;
+  const grid = document.getElementById("opportunities-grid");
+  const totalBadge = document.getElementById("opps-total-badge");
+
+  const allOpps = radarData.opportunities || [];
+  const filtered = currentOppCategory === "all" 
+    ? allOpps 
+    : allOpps.filter(o => o.category === currentOppCategory);
+
+  totalBadge.textContent = `${filtered.length} Setup${filtered.length === 1 ? "" : "s"}`;
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div class="placeholder-row" style="grid-column: 1/-1;">No opportunities found under '${currentOppCategory}' filter at this moment.</div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(opp => {
+    const isBuy = opp.signal === "BUY" || opp.signal === "STRONG_BUY";
+    const sigClass = isBuy ? "signal-buy" : (opp.signal === "DEFENSIVE_HOLD" ? "signal-hold" : "signal-danger");
+    const sigLabel = isBuy ? "⚡ BUY SIGNAL" : "🛡️ DEFENSIVE";
+
+    const curP = parseFloat(opp.current_price || 0);
+    const tgtP = parseFloat(opp.target_price || 0);
+    const slP  = parseFloat(opp.stop_loss_price || 0);
+    const gainPct = curP > 0 && tgtP > 0 ? (((tgtP - curP) / curP) * 100).toFixed(1) : "0.0";
+    const lossPct = curP > 0 && slP > 0  ? (((curP - slP) / curP) * 100).toFixed(1) : "0.0";
+
+    const tagsHtml = (opp.tags || []).map(t => `<span class="opp-tag">${t}</span>`).join("");
+
+    return `
+      <div class="opportunity-card" id="card-${opp.id}">
+        <div class="opp-head">
+          <div class="opp-asset-title">#${opp.symbol} <span class="opp-cat-pill">${opp.category_label || opp.category}</span></div>
+          <span class="opp-signal-badge ${sigClass}">${sigLabel}</span>
+        </div>
+        <div class="opp-headline">${opp.headline}</div>
+        <div class="opp-narrative-box">${opp.narrative}</div>
+        <div class="opp-metrics-row">
+          <div class="opp-metric-item">
+            <span class="opp-metric-lbl">ENTRY</span>
+            <span class="opp-metric-val">₹${curP.toLocaleString("en-IN", {maximumFractionDigits: 4})}</span>
+          </div>
+          <div class="opp-metric-item">
+            <span class="opp-metric-lbl">TARGET</span>
+            <span class="opp-metric-val" style="color:var(--green);">₹${tgtP.toLocaleString("en-IN", {maximumFractionDigits: 4})} (+${gainPct}%)</span>
+          </div>
+          <div class="opp-metric-item">
+            <span class="opp-metric-lbl">STOP LOSS</span>
+            <span class="opp-metric-val" style="color:var(--red);">₹${slP.toLocaleString("en-IN", {maximumFractionDigits: 4})} (-${lossPct}%)</span>
+          </div>
+        </div>
+        <div class="opp-tags-row">
+          ${tagsHtml}
+        </div>
+        <div class="opp-footer-row">
+          <div class="opp-conf">⚡ Confidence: <strong>${opp.confidence || 80}%</strong></div>
+          <button class="btn-execute-opp" onclick="executeOpportunity('${opp.id}')">
+            ${isBuy ? "⚡ Execute Trade" : "🛡️ Set Guard"}
+          </button>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+async function executeOpportunity(oppId) {
+  const btn = event?.currentTarget;
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "⏳ Executing...";
+  }
+  try {
+    const r = await fetch(`${API}/api/trades/execute-opportunity`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ opportunity_id: oppId })
+    });
+    const d = await r.json();
+    if (d.success) {
+      showNotification(`✅ ${d.message}`, "success");
+      fullPoll();
+    } else {
+      showNotification(`ℹ️ ${d.message}`, "error");
+    }
+  } catch(e) {
+    showNotification("❌ Network error executing trade", "error");
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = "⚡ Execute Trade";
+    }
+  }
+}
+
+// --------------------------------------------------------------------------
+// DESKTOP BROWSER TOAST POPUPS (Live Seller Overlap & War Alerts)
+// --------------------------------------------------------------------------
+
+function handleUrgentPopups(popups) {
+  if (!popups || popups.length === 0) return;
+  popups.forEach(p => {
+    if (!lastSeenPopups.has(p.id)) {
+      lastSeenPopups.add(p.id);
+      showRichToastPopup(p);
+    }
+  });
+  // Keep set size bounded
+  if (lastSeenPopups.size > 50) {
+    lastSeenPopups = new Set(Array.from(lastSeenPopups).slice(-20));
+  }
+}
+
+function showRichToastPopup(p) {
+  const container = document.getElementById("toast-popup-container");
+  if (!container) return;
+
+  const toast = document.createElement("div");
+  const isDanger = p.level === "danger";
+  toast.className = `toast-popup ${isDanger ? "toast-danger" : "toast-warning"}`;
+
+  const icon = isDanger ? "🚨" : "⚔️";
+
+  toast.innerHTML = `
+    <span class="toast-icon">${icon}</span>
+    <div class="toast-body">
+      <div class="toast-title">${p.title}</div>
+      <div class="toast-desc">${p.message}</div>
+    </div>
+    <button class="toast-close" title="Dismiss">✕</button>
+  `;
+
+  toast.querySelector(".toast-close").onclick = () => {
+    toast.style.opacity = "0";
+    toast.style.transform = "translateX(50px)";
+    setTimeout(() => toast.remove(), 300);
+  };
+
+  container.appendChild(toast);
+
+  // Auto dismiss after 8 seconds
+  setTimeout(() => {
+    if (toast.parentElement) {
+      toast.style.opacity = "0";
+      toast.style.transform = "translateX(50px)";
+      setTimeout(() => toast.remove(), 300);
+    }
+  }, 8000);
+}
+
+// --------------------------------------------------------------------------
+// SMART RADAR & POPUPS MENU MODAL
+// --------------------------------------------------------------------------
+
+function openRadarModal() {
+  document.body.style.overflow = "hidden";
+  document.getElementById("radar-modal").classList.add("active");
+  if (radarData) renderRadarModalContent(radarData);
+  fetchRadar(true);
+}
+
+function closeRadarModal() {
+  document.body.style.overflow = "";
+  document.getElementById("radar-modal").classList.remove("active");
+  document.getElementById("radar-alert-feedback").innerHTML = "";
+}
+
+function renderRadarModalContent(data) {
+  if (!data) return;
+
+  // 1. Orderbook Matrix Grid
+  const obContainer = document.getElementById("modal-ob-matrix");
+  const obList = data.orderbook_watchouts || [];
+  if (obList.length > 0) {
+    obContainer.innerHTML = obList.map(ob => {
+      const isOverlap = ob.overlap_flag;
+      const isAbsorb = ob.absorption_flag;
+      const tagClass = isOverlap ? "badge-danger" : (isAbsorb ? "badge-success" : "badge-neutral");
+      const tagText = isOverlap ? "SELLER OVERLAP" : (isAbsorb ? "BUYER ABSORBING" : "BALANCED");
+
+      return `
+        <div class="ob-card">
+          <div class="ob-card-top">
+            <span>#${ob.symbol}/INR</span>
+            <span class="ob-card-tag ${tagClass}">${tagText}</span>
+          </div>
+          <div class="dgc-label">
+            <span class="dgc-bid-lbl">Bids: ${ob.bid_pressure_pct}%</span>
+            <span class="dgc-ask-lbl">Asks: ${ob.ask_pressure_pct}%</span>
+          </div>
+          <div class="depth-split-track" style="margin-bottom:6px;">
+            <div class="depth-split-bids" style="width:${ob.bid_pressure_pct}%"></div>
+            <div class="depth-split-asks" style="width:${ob.ask_pressure_pct}%"></div>
+          </div>
+          <div style="font-size:10px; color:var(--text-muted); line-height:1.35;">${ob.summary}</div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  // 2. Relation Trades Matrix
+  const relContainer = document.getElementById("modal-relation-matrix");
+  const relList = data.relation_trades || [];
+  if (relList.length > 0) {
+    relContainer.innerHTML = relList.map(r => {
+      const isBuy = r.signal === "BUY";
+      const icon = isBuy ? "🚀" : "⚠️";
+      const badgeClass = isBuy ? "signal-buy" : "signal-danger";
+      return `
+        <div class="relation-item-card">
+          <div class="ric-left">
+            <div class="ric-title">${icon} #${r.symbol} (${r.cluster || "Altcoin"}) <span class="opp-signal-badge ${badgeClass}">${r.signal}</span></div>
+            <div class="ric-sub">${r.narrative}</div>
+          </div>
+          <div class="ric-metrics">
+            <div style="color:#fff; font-weight:700;">Price: ₹${r.current_price.toLocaleString("en-IN", {maximumFractionDigits:2})}</div>
+            <div style="color:var(--green);">Target: ₹${r.target_price.toLocaleString("en-IN", {maximumFractionDigits:2})} (+${r.expected_return_pct}%)</div>
+            <div style="color:var(--text-dim); font-size:10px;">BTC Lag Gap: ${r.lag_pct >= 0 ? '+' : ''}${parseFloat(r.lag_pct || 0).toFixed(2)}%</div>
+          </div>
+        </div>
+      `;
+    }).join("");
+  } else {
+    relContainer.innerHTML = `<div class="placeholder-row">Correlations aligned with Bitcoin momentum. No extreme sympathy gaps.</div>`;
+  }
+
+  // 3. Social Media (X.com) & Geopolitical War Radar
+  const socContainer = document.getElementById("modal-social-radar");
+  const newsData = data.social_news || {};
+  const dir = newsData.direction_probability || {};
+  const buzz = newsData.social_buzz_alerts || [];
+
+  socContainer.innerHTML = `
+    <div class="srb-row">
+      <div>
+        <span style="font-size:11px; font-weight:700; color:#fff;">MACRO THREAT LEVEL:</span>
+        <strong style="color:${newsData.threat_level >= 50 ? 'var(--red)' : 'var(--green)'}; margin-left:6px;">${newsData.threat_level || 0}/100</strong>
+        <span class="count-pill" style="margin-left:6px;">${newsData.threat_status || 'STABLE'}</span>
+      </div>
+      <div>
+        <span style="font-size:11px; font-weight:700; color:#fff;">DIRECTION FORECAST:</span>
+        <strong style="color:var(--cyan); margin-left:6px;">${dir.bias || 'NEUTRAL'}</strong>
+        <span style="font-size:10px; color:var(--text-muted); margin-left:4px;">(Down: ${dir.down_prob || 50}% | Up: ${dir.up_prob || 50}%)</span>
+      </div>
+    </div>
+    <div class="srb-summary">${newsData.social_summary || 'Monitoring social media and macro RSS feeds.'}</div>
+    ${buzz.length > 0 ? `
+      <div style="margin-top:10px; padding-top:8px; border-top:1px solid var(--border); font-size:11px;">
+        <span class="opp-tag" style="background:rgba(255,184,0,0.15); color:var(--amber);">${buzz[0].tag || 'ALERT'}</span>
+        <strong style="color:#fff; margin-left:6px;">${buzz[0].headline || ''}</strong>
+        <p style="color:var(--text-muted); margin:3px 0 0;">Impact: ${buzz[0].market_impact || ''}</p>
+      </div>
+    ` : ''}
+  `;
+}
+
+async function triggerRadarAlert(alertType) {
+  const fb = document.getElementById("radar-alert-feedback");
+  fb.innerHTML = `⏳ Dispatching ${alertType} alert to Telegram...`;
+  try {
+    const r = await fetch(`${API}/api/radar/test-alert`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ alert_type: alertType })
+    });
+    const d = await r.json();
+    if (d.success) {
+      fb.innerHTML = `<span style="color:var(--green);">✅ ${d.message}</span>`;
+      showNotification(`📲 ${d.message}`, "success");
+    } else {
+      fb.innerHTML = `<span style="color:var(--red);">❌ ${d.message}</span>`;
+      showNotification(`❌ ${d.message}`, "error");
+    }
+  } catch(e) {
+    fb.innerHTML = `<span style="color:var(--red);">❌ Network error sending test alert</span>`;
+  }
+}
+
