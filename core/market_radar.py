@@ -280,18 +280,19 @@ class MarketRadarEngine:
 
         return relation_opportunities[:6]
 
-    def build_radar_overview(self, force_refresh: bool = False) -> Dict[str, Any]:
+    def build_radar_overview(self, force_refresh: bool = False, enable_futures: bool = False) -> Dict[str, Any]:
         """
         Generate full Market Radar synthesis:
         - Orderbook depth watchouts for top assets
         - Ongoing live sticks analysis
         - Correlated sympathy setups
         - Social Media (X.com) and Geopolitical war news intelligence
-        - Filtered trade opportunities list
+        - Filtered trade opportunities list (Spot long + optional Futures short when enabled)
         """
         now = time.time()
-        if not force_refresh and self.cached_radar and (now - self.last_radar_time < self.radar_ttl):
+        if not force_refresh and self.cached_radar and (now - self.last_radar_time < self.radar_ttl) and (getattr(self, "last_enable_futures", False) == enable_futures):
             return self.cached_radar
+        self.last_enable_futures = enable_futures
 
         # 1. Fetch live tickers & market movers
         all_tickers = self.client.get_tickers()
@@ -397,28 +398,52 @@ class MarketRadarEngine:
                     "badge_class": "success"
                 })
             elif ob["overlap_flag"]:
-                # High Risk Alert Opportunity / Defensive Exit
-                opportunities.append({
-                    "id": f"ob-overlap-{sym.lower()}",
-                    "symbol": sym,
-                    "pair": ob["pair"],
-                    "market": mkt,
-                    "category": "orderbook",
-                    "category_label": "⚠️ Seller Overlap Watchout",
-                    "signal": "DEFENSIVE_HOLD",
-                    "current_price": price,
-                    "target_price": round(price * 0.97, 2),
-                    "stop_loss_price": round(price * 1.01, 2),
-                    "risk_reward": 1.0,
-                    "confidence": int(ob["ask_pressure_pct"]),
-                    "headline": f"🚨 {sym} Seller is Overlapping Buyer!",
-                    "narrative": (
-                        f"Dangerous orderbook dynamic on {sym}: Sellers are heavily overlapping buyers ({ob['ask_pressure_pct']}% asks). "
-                        f"Bids are being consumed downwards with aggressive sell market orders. Avoid buying; prepare defensive stops."
-                    ),
-                    "tags": ["Seller Overlap", "Depth Warning", f"{ob['ask_pressure_pct']}% Asks"],
-                    "badge_class": "danger"
-                })
+                if enable_futures:
+                    # Futures Short Selling Opportunity
+                    opportunities.append({
+                        "id": f"short-ob-overlap-{sym.lower()}",
+                        "symbol": sym,
+                        "pair": ob["pair"],
+                        "market": mkt,
+                        "category": "short_futures",
+                        "category_label": "🔴 Futures Short (Derivatives)",
+                        "signal": "SHORT",
+                        "current_price": price,
+                        "target_price": round(price * 0.95, 2),
+                        "stop_loss_price": round(price * 1.025, 2),
+                        "risk_reward": 2.0,
+                        "confidence": int(ob["ask_pressure_pct"]),
+                        "headline": f"🔴 #{sym} Futures Short (Seller Overlap Breakdown)",
+                        "narrative": (
+                            f"Heavy ask walls crushing bids on {sym} ({ob['ask_pressure_pct']}% asks vs {ob['bid_pressure_pct']}% bids). "
+                            f"Prime shorting entry targeting downside support at ₹{round(price * 0.95, 2):,.2f}. 2.5% stop loss."
+                        ),
+                        "tags": ["Futures Short", "Ask Wall", f"{ob['ask_pressure_pct']}% Asks", "Derivatives"],
+                        "badge_class": "danger"
+                    })
+                else:
+                    # High Risk Alert Opportunity / Defensive Exit (Spot Preservation)
+                    opportunities.append({
+                        "id": f"ob-overlap-{sym.lower()}",
+                        "symbol": sym,
+                        "pair": ob["pair"],
+                        "market": mkt,
+                        "category": "orderbook",
+                        "category_label": "⚠️ Seller Overlap Watchout",
+                        "signal": "DEFENSIVE_HOLD",
+                        "current_price": price,
+                        "target_price": round(price * 0.97, 2),
+                        "stop_loss_price": round(price * 1.01, 2),
+                        "risk_reward": 1.0,
+                        "confidence": int(ob["ask_pressure_pct"]),
+                        "headline": f"🚨 {sym} Seller is Overlapping Buyer!",
+                        "narrative": (
+                            f"Dangerous orderbook dynamic on {sym}: Sellers are heavily overlapping buyers ({ob['ask_pressure_pct']}% asks). "
+                            f"Bids are being consumed downwards with aggressive sell market orders. Avoid buying; prepare defensive stops."
+                        ),
+                        "tags": ["Seller Overlap", "Depth Warning", f"{ob['ask_pressure_pct']}% Asks"],
+                        "badge_class": "danger"
+                    })
 
         # Category C: Live Stick Wick Reversal Plays
         for stick in live_sticks:
@@ -452,6 +477,30 @@ class MarketRadarEngine:
                     ),
                     "tags": ["Pin Bar", "Dip Absorbed", f"{stick['lower_wick_pct']}% Wick"],
                     "badge_class": "accent"
+                })
+            elif stick["status"] == "BEARISH_WICK" and enable_futures:
+                tp = round(price * 0.96, 2)
+                sl = round(stick["high"] * 1.005, 2)
+                opportunities.append({
+                    "id": f"short-stick-wick-{sym.lower()}",
+                    "symbol": sym,
+                    "pair": f"I-{sym}_INR",
+                    "market": mkt,
+                    "category": "short_futures",
+                    "category_label": "🔴 Futures Short (Derivatives)",
+                    "signal": "SHORT",
+                    "current_price": price,
+                    "target_price": tp,
+                    "stop_loss_price": sl,
+                    "risk_reward": 2.2,
+                    "confidence": min(85, int(50 + stick["upper_wick_pct"] * 0.5)),
+                    "headline": f"🔴 #{sym} Top-Wick Rejection Short Breakdown",
+                    "narrative": (
+                        f"Ongoing 1H live stick for {sym} shows violent rejection from highs ({stick['upper_wick_pct']:.0f}% upper shadow). "
+                        f"Sellers rejected ₹{stick['high']:,.2f} sharply. Downside continuation active."
+                    ),
+                    "tags": ["Futures Short", "Bearish Wick", "Resistance Rejection"],
+                    "badge_class": "danger"
                 })
 
         # Category D: News & Social Sentiment Triggers

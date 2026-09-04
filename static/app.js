@@ -708,6 +708,25 @@ function wireEvents() {
     });
   });
 
+  // Futures short selling toggle — show/hide futures options panel
+  const futuresToggle = document.getElementById("cfg-enable-futures");
+  if (futuresToggle) {
+    futuresToggle.addEventListener("change", (e) => {
+      const panel = document.getElementById("futures-options-panel");
+      if (panel) panel.style.display = e.target.checked ? "block" : "none";
+    });
+  }
+
+  // Leverage selector buttons
+  document.querySelectorAll("#leverage-selector .btn-lev").forEach(b => {
+    b.onclick = () => {
+      document.querySelectorAll("#leverage-selector .btn-lev").forEach(x => x.classList.remove("active"));
+      b.classList.add("active");
+      const levInput = document.getElementById("cfg-futures-leverage");
+      if (levInput) levInput.value = b.getAttribute("data-lev");
+    };
+  });
+
   // Save settings
   document.getElementById("btn-save-settings").onclick = saveSettings;
 
@@ -765,6 +784,12 @@ function wireEvents() {
   document.getElementById("btn-trigger-overlap-alert").onclick = () => triggerRadarAlert("seller_overlap");
   document.getElementById("btn-trigger-war-alert").onclick = () => triggerRadarAlert("war_news");
   document.getElementById("btn-trigger-corr-alert").onclick = () => triggerRadarAlert("correlation");
+  const buyBtnAlert = document.getElementById("btn-trigger-buy-buttons-alert");
+  if (buyBtnAlert) buyBtnAlert.onclick = () => triggerRadarAlert("buy_buttons");
+  const sellBtnAlert = document.getElementById("btn-trigger-sell-buttons-alert");
+  if (sellBtnAlert) sellBtnAlert.onclick = () => triggerRadarAlert("sell_buttons");
+  const shortBtnAlert = document.getElementById("btn-trigger-short-buttons-alert");
+  if (shortBtnAlert) shortBtnAlert.onclick = () => triggerRadarAlert("short_alert");
 
   // Close modal on overlay click
   document.getElementById("config-modal").addEventListener("click", e => {
@@ -785,6 +810,21 @@ function openModal() {
     document.getElementById("cfg-interval").value = s.cycle_interval || 30;
     if (s.telegram_chat_id)
       document.getElementById("cfg-telegram-chat").value = s.telegram_chat_id;
+
+    // Futures Short Selling State
+    const futuresCheckbox = document.getElementById("cfg-enable-futures");
+    const futuresPanel = document.getElementById("futures-options-panel");
+    const isFuturesEnabled = Boolean(s.enable_futures_shorting);
+    if (futuresCheckbox) futuresCheckbox.checked = isFuturesEnabled;
+    if (futuresPanel) futuresPanel.style.display = isFuturesEnabled ? "block" : "none";
+
+    const lev = s.futures_leverage || 2;
+    const levInput = document.getElementById("cfg-futures-leverage");
+    if (levInput) levInput.value = lev;
+    document.querySelectorAll("#leverage-selector .btn-lev").forEach(b => {
+      b.classList.toggle("active", b.getAttribute("data-lev") == lev);
+    });
+
     document.getElementById("config-modal").classList.add("active");
   });
 }
@@ -802,6 +842,8 @@ async function saveSettings() {
   const chatId   = document.getElementById("cfg-telegram-chat").value.trim();
   const apiKey   = document.getElementById("cfg-api-key")?.value?.trim() || null;
   const apiSec   = document.getElementById("cfg-api-secret")?.value?.trim() || null;
+  const enableFutures = document.getElementById("cfg-enable-futures")?.checked || false;
+  const leverage = parseInt(document.getElementById("cfg-futures-leverage")?.value) || 2;
 
   try {
     await fetch(`${API}/api/control/settings`, {
@@ -811,6 +853,8 @@ async function saveSettings() {
         initial_capital: capital,
         cycle_interval: interval,
         telegram_chat_id: chatId || null,
+        enable_futures_shorting: enableFutures,
+        futures_leverage: leverage,
         api_key: apiKey,
         api_secret: apiSec,
         ai_provider: "quantitative"
@@ -818,6 +862,7 @@ async function saveSettings() {
     });
     closeModal();
     fullPoll();
+    fetchRadar(true);
     showNotification("✅ Settings saved!", "success");
   } catch(e) {
     showNotification("❌ Error saving settings", "error");
@@ -985,6 +1030,19 @@ function renderOpportunities() {
   if (!radarData || !radarData.opportunities) return;
   const grid = document.getElementById("opportunities-grid");
   const totalBadge = document.getElementById("opps-total-badge");
+  const shortChip = document.getElementById("filter-chip-short");
+
+  // Conditional visibility of the Short Setups filter chip
+  const isShortingEnabled = Boolean(radarData.enable_futures_shorting);
+  if (shortChip) {
+    shortChip.style.display = isShortingEnabled ? "inline-flex" : "none";
+    if (!isShortingEnabled && currentOppCategory === "short_futures") {
+      currentOppCategory = "all";
+      document.querySelectorAll(".filter-chip").forEach(c => {
+        c.classList.toggle("active", c.getAttribute("data-category") === "all");
+      });
+    }
+  }
 
   const allOpps = radarData.opportunities || [];
   const filtered = currentOppCategory === "all" 
@@ -1000,19 +1058,46 @@ function renderOpportunities() {
 
   grid.innerHTML = filtered.map(opp => {
     const isBuy = opp.signal === "BUY" || opp.signal === "STRONG_BUY";
-    const sigClass = isBuy ? "signal-buy" : (opp.signal === "DEFENSIVE_HOLD" ? "signal-hold" : "signal-danger");
-    const sigLabel = isBuy ? "⚡ BUY SIGNAL" : "🛡️ DEFENSIVE";
+    const isShort = opp.signal === "SHORT";
+
+    let sigClass = "signal-danger";
+    let sigLabel = "🛡️ DEFENSIVE";
+    let execLabel = "🛡️ Set Guard";
+    let btnClass = "btn-execute-opp";
+
+    if (isBuy) {
+      sigClass = "signal-buy";
+      sigLabel = "⚡ BUY SIGNAL";
+      execLabel = "⚡ Execute Trade";
+    } else if (isShort) {
+      sigClass = "signal-danger";
+      sigLabel = "🔴 SHORT (FUTURES)";
+      execLabel = "🔴 Execute Short";
+      btnClass = "btn-execute-opp btn-execute-short";
+    }
 
     const curP = parseFloat(opp.current_price || 0);
     const tgtP = parseFloat(opp.target_price || 0);
     const slP  = parseFloat(opp.stop_loss_price || 0);
-    const gainPct = curP > 0 && tgtP > 0 ? (((tgtP - curP) / curP) * 100).toFixed(1) : "0.0";
-    const lossPct = curP > 0 && slP > 0  ? (((curP - slP) / curP) * 100).toFixed(1) : "0.0";
+
+    let gainPct = "0.0";
+    let lossPct = "0.0";
+
+    if (isShort) {
+      gainPct = curP > 0 && tgtP > 0 ? (((curP - tgtP) / curP) * 100).toFixed(1) : "0.0";
+      lossPct = curP > 0 && slP > 0 ? (((slP - curP) / curP) * 100).toFixed(1) : "0.0";
+    } else {
+      gainPct = curP > 0 && tgtP > 0 ? (((tgtP - curP) / curP) * 100).toFixed(1) : "0.0";
+      lossPct = curP > 0 && slP > 0  ? (((curP - slP) / curP) * 100).toFixed(1) : "0.0";
+    }
+
+    const targetLabel = isShort ? "TARGET (DOWN)" : "TARGET (UP)";
+    const stopLabel   = isShort ? "STOP LOSS (UP)" : "STOP LOSS (DOWN)";
 
     const tagsHtml = (opp.tags || []).map(t => `<span class="opp-tag">${t}</span>`).join("");
 
     return `
-      <div class="opportunity-card" id="card-${opp.id}">
+      <div class="opportunity-card ${isShort ? 'opportunity-card-short' : ''}" id="card-${opp.id}">
         <div class="opp-head">
           <div class="opp-asset-title">#${opp.symbol} <span class="opp-cat-pill">${opp.category_label || opp.category}</span></div>
           <span class="opp-signal-badge ${sigClass}">${sigLabel}</span>
@@ -1025,11 +1110,11 @@ function renderOpportunities() {
             <span class="opp-metric-val">₹${curP.toLocaleString("en-IN", {maximumFractionDigits: 4})}</span>
           </div>
           <div class="opp-metric-item">
-            <span class="opp-metric-lbl">TARGET</span>
+            <span class="opp-metric-lbl">${targetLabel}</span>
             <span class="opp-metric-val" style="color:var(--green);">₹${tgtP.toLocaleString("en-IN", {maximumFractionDigits: 4})} (+${gainPct}%)</span>
           </div>
           <div class="opp-metric-item">
-            <span class="opp-metric-lbl">STOP LOSS</span>
+            <span class="opp-metric-lbl">${stopLabel}</span>
             <span class="opp-metric-val" style="color:var(--red);">₹${slP.toLocaleString("en-IN", {maximumFractionDigits: 4})} (-${lossPct}%)</span>
           </div>
         </div>
@@ -1038,8 +1123,8 @@ function renderOpportunities() {
         </div>
         <div class="opp-footer-row">
           <div class="opp-conf">⚡ Confidence: <strong>${opp.confidence || 80}%</strong></div>
-          <button class="btn-execute-opp" onclick="executeOpportunity('${opp.id}')">
-            ${isBuy ? "⚡ Execute Trade" : "🛡️ Set Guard"}
+          <button class="${btnClass}" onclick="executeOpportunity('${opp.id}')">
+            ${execLabel}
           </button>
         </div>
       </div>

@@ -71,6 +71,13 @@ DEFAULT_TAKE_PROFIT_1_PCT = 0.04   # 4.0% TP1 (1:2 RR)
 DEFAULT_TAKE_PROFIT_2_PCT = 0.08   # 8.0% TP2 (1:4 RR)
 DEFAULT_TRAILING_STOP_PCT = 0.015  # 1.5% Trailing Stop
 
+# Futures / Short Selling Configuration (CoinDCX Derivatives)
+ENABLE_FUTURES_SHORTING = False     # Default: UNCHECKED / DISABLED (100% Spot preservation by default)
+FUTURES_DEFAULT_LEVERAGE = 2        # Default 2x leverage when enabled
+FUTURES_MAX_LEVERAGE = 5            # Cap at 5x for safety
+FUTURES_MAX_SHORT_ALLOCATION = 0.15 # Max 15% equity per short trade
+COINDCX_FUTURES_TAKER_FEE = 0.0005  # 0.05% Futures Taker Fee
+
 
 # Base Tracked CoinDCX INR Trading Pairs (Major anchors)
 BASE_TRACKED_PAIRS = [

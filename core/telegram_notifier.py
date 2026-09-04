@@ -10,10 +10,11 @@ class TelegramNotifier:
     """
     Telegram Bot Notification & Interactive Command System for the Trading Agent.
     Features:
-    - Persistent Reply Keyboard (Mobile & Desktop menu buttons)
-    - Telegram "/" command list registration (setMyCommands)
-    - Dynamic Inline Action Keyboards attached underneath messages & alerts (Buy, Sell, Help, Radar)
-    - Interactive Callback Query listener (1-tap Buy, 1-tap Sell, Panic Liquidate, Navigation)
+    - Clean Native Telegram "/" and "Menu" button (no obstructive bottom keyboard)
+    - Automatic removal of any legacy bottom reply keyboard (remove_keyboard=True)
+    - Dynamic Inline Action Keyboards attached underneath messages & alerts (Buy, Sell, Short, Help, Radar)
+    - Interactive Callback Query listener (1-tap Buy, 1-tap Sell, 1-tap Short, Panic Liquidate)
+    - Conditional Futures Short Selling support with high-risk advisories
     """
 
     def __init__(self, bot_token: str = "", chat_id: str = ""):
@@ -29,73 +30,76 @@ class TelegramNotifier:
         self.chat_id = chat_id
 
     # ==========================================
-    # KEYBOARD BUILDERS
+    # KEYBOARD BUILDERS & MENU REGISTRATION
     # ==========================================
-
-    @staticmethod
-    def get_main_menu_keyboard() -> Dict[str, Any]:
-        """
-        Persistent custom bottom Reply Keyboard for mobile and desktop Telegram.
-        Allows instant 1-tap navigation without typing commands.
-        """
-        return {
-            "keyboard": [
-                [{"text": "📊 Status"}, {"text": "⚡ Smart Radar"}],
-                [{"text": "🎯 Opportunities"}, {"text": "🚨 Watchouts"}],
-                [{"text": "🔗 Relations"}, {"text": "💼 Positions"}],
-                [{"text": "🛑 Panic Sell"}, {"text": "❓ Help"}]
-            ],
-            "resize_keyboard": True,
-            "is_persistent": True
-        }
 
     @staticmethod
     def create_inline_keyboard(rows: List[List[Dict[str, str]]]) -> Dict[str, Any]:
         """Wrap rows of buttons into a Telegram inline_keyboard structure."""
         return {"inline_keyboard": rows}
 
+    @staticmethod
+    def get_remove_keyboard() -> Dict[str, Any]:
+        """
+        Removes any persistent bottom reply keyboard from the user's screen
+        so only the clean native Telegram 'Menu' button is visible.
+        """
+        return {"remove_keyboard": True}
+
     def set_bot_menu_commands(self, token: Optional[str] = None) -> bool:
         """
-        Register commands with Telegram via setMyCommands.
-        Configures the native '/' Command Menu button on Telegram clients.
+        Register commands with Telegram via setMyCommands and setChatMenuButton.
+        Configures the native '/' Command Menu button on Telegram clients without bottom clutter.
         """
         active_token = token or self.bot_token
         if not active_token:
             return False
 
-        url = f"https://api.telegram.org/bot{active_token}/setMyCommands"
+        url_commands = f"https://api.telegram.org/bot{active_token}/setMyCommands"
         commands = [
             {"command": "status", "description": "Portfolio equity, health %, & net PnL"},
             {"command": "radar", "description": "War news & social (X.com) intelligence"},
-            {"command": "opportunities", "description": "Top trade opportunities & 1-tap Buy"},
+            {"command": "opportunities", "description": "Scanned trade setups with 1-tap actions"},
             {"command": "watchouts", "description": "Buyer vs Seller depth overlap warnings"},
             {"command": "relations", "description": "Correlated sympathy & BTC lag setups"},
             {"command": "positions", "description": "Active open trades & trailing stops"},
             {"command": "buy", "description": "Manual / 1-tap Buy (e.g. /buy BTC)"},
-            {"command": "sell", "description": "Manual Sell / Exit (e.g. /sell BTC)"},
+            {"command": "sell", "description": "Manual Sell / Cover (e.g. /sell BTC)"},
+            {"command": "short", "description": "Futures Short (e.g. /short BTC - if enabled)"},
             {"command": "cycle", "description": "Run immediate autonomous trading cycle"},
             {"command": "liquidate", "description": "Emergency 100% INR cash exit"},
             {"command": "help", "description": "Show interactive guide & menu"}
         ]
 
         try:
+            # 1. Set commands list
             data = json.dumps({"commands": commands}).encode("utf-8")
             req = urllib.request.Request(
-                url,
+                url_commands,
                 data=data,
                 headers={"Content-Type": "application/json", "User-Agent": "Mozilla/5.0"}
             )
             with urllib.request.urlopen(req, timeout=8) as resp:
-                res = json.loads(resp.read().decode())
-                return res.get("ok", False)
+                res1 = json.loads(resp.read().decode())
+
+            # 2. Set native chat menu button to 'commands' type
+            url_menu = f"https://api.telegram.org/bot{active_token}/setChatMenuButton"
+            menu_data = json.dumps({"menu_button": {"type": "commands"}}).encode("utf-8")
+            req_m = urllib.request.Request(
+                url_menu,
+                data=menu_data,
+                headers={"Content-Type": "application/json", "User-Agent": "Mozilla/5.0"}
+            )
+            with urllib.request.urlopen(req_m, timeout=8) as resp_m:
+                res2 = json.loads(resp_m.read().decode())
+
+            return res1.get("ok", False) and res2.get("ok", False)
         except Exception as e:
-            print(f"[TelegramNotifier] Error setting bot commands: {e}")
+            print(f"[TelegramNotifier] Error setting bot menu commands: {e}")
             return False
 
     def answer_callback_query(self, callback_query_id: str, text: str = "", show_alert: bool = False) -> bool:
-        """
-        Acknowledge an inline button click via answerCallbackQuery to stop the loading spinner.
-        """
+        """Acknowledge an inline button click via answerCallbackQuery to stop the loading spinner."""
         if not self.bot_token:
             return False
 
@@ -130,7 +134,7 @@ class TelegramNotifier:
         reply_markup: Optional[Dict[str, Any]] = None,
         chat_id: Optional[str] = None
     ) -> bool:
-        """Send message via Telegram Bot API with optional inline or reply keyboard."""
+        """Send message via Telegram Bot API with optional inline keyboard or remove_keyboard."""
         target_chat = chat_id or self.chat_id
         if not self.bot_token or not target_chat:
             return False
@@ -160,10 +164,7 @@ class TelegramNotifier:
             return False
 
     def auto_detect_chat_id(self, token: Optional[str] = None) -> Optional[str]:
-        """
-        Poll getUpdates to automatically capture the user's chat_id
-        after they send a message to @antigravitycode_bot.
-        """
+        """Poll getUpdates to automatically capture the user's chat_id."""
         active_token = token or self.bot_token
         if not active_token:
             return None
@@ -188,9 +189,7 @@ class TelegramNotifier:
         return None
 
     def test_connection(self, token: Optional[str] = None, chat_id: Optional[str] = None) -> Dict[str, Any]:
-        """
-        Test bot token and send a verification test alert with menu buttons and inline buttons.
-        """
+        """Test bot token and send a clean verification alert with inline buttons and no bottom menu clutter."""
         active_token = token or self.bot_token
         active_chat = chat_id or self.chat_id
 
@@ -219,7 +218,7 @@ class TelegramNotifier:
                 "message": f"Could not connect to Telegram API: {str(e)}"
             }
 
-        # Step 2: Register Commands Menu
+        # Step 2: Register Native Command Menu
         self.set_bot_menu_commands(active_token)
 
         # Step 3: If Chat ID is missing, attempt auto-detect
@@ -235,14 +234,16 @@ class TelegramNotifier:
                     "message": f"Bot is online ({bot_username}), but no chat room found! Open Telegram, send /start to {bot_username}, then click Test again."
                 }
 
-        # Step 4: Send Test Message with persistent menu keyboard and inline buttons
+        # Step 4: Remove any legacy bottom keyboard & Send clean verification message
+        self.send_message("🧹 <i>Cleaning legacy keyboards...</i>", reply_markup=self.get_remove_keyboard(), chat_id=active_chat)
+
         test_msg = (
-            f"⚡ <b>NEXUS SURVIVAL AGENT VERIFICATION</b> ⚡\n"
+            f"⚡ <b>NEXUS SURVIVAL AGENT VERIFIED</b> ⚡\n"
             f"━━━━━━━━━━━━━━━━━━\n"
             f"✅ <b>Connection Status:</b> ONLINE & VERIFIED\n"
             f"🤖 <b>Bot:</b> {bot_username}\n"
             f"🆔 <b>Linked Chat ID:</b> <code>{active_chat}</code>\n"
-            f"🚀 <i>Interactive Menu Buttons & Quick Action Buttons are now activated!</i>\n"
+            f"🎯 <b>Interface:</b> Native 'Menu' button active. No bottom keyboard clutter.\n"
             f"⏱️ <i>{time.strftime('%Y-%m-%d %H:%M:%S')}</i>"
         )
 
@@ -253,17 +254,12 @@ class TelegramNotifier:
             ],
             [
                 {"text": "🎯 Opportunities", "callback_data": "opportunities"},
-                {"text": "❓ Help & Guide", "callback_data": "help"}
+                {"text": "❓ Help & Commands", "callback_data": "help"}
             ]
         ])
 
-        # Send test message with inline keyboard
         sent_ok = self.send_message(test_msg, reply_markup=inline_buttons, chat_id=active_chat)
         if sent_ok:
-            # Also send persistent reply menu keyboard so user always has bottom buttons
-            menu_msg = "💡 <b>Quick Menu Buttons Enabled:</b> Tap any button below to query your trading agent instantly."
-            self.send_message(menu_msg, reply_markup=self.get_main_menu_keyboard(), chat_id=active_chat)
-
             self.bot_token = active_token
             self.chat_id = str(active_chat)
             config.TELEGRAM_BOT_TOKEN = active_token
@@ -272,7 +268,7 @@ class TelegramNotifier:
                 "success": True,
                 "chat_id": str(active_chat),
                 "bot_username": bot_username,
-                "message": f"Test message with interactive buttons delivered successfully to Telegram chat ({active_chat})!"
+                "message": f"Test message delivered successfully to Telegram chat ({active_chat})!"
             }
         else:
             return {
@@ -324,6 +320,48 @@ class TelegramNotifier:
         ])
         self.send_message(msg, reply_markup=markup)
 
+    def send_short_alert(self, pos: Dict[str, Any], trading_mode: str = "paper"):
+        """Send formatted Futures Short Order Alert with instant COVER / EXIT inline buttons."""
+        mode_label = "🧪 PAPER DERIVATIVES" if trading_mode == "paper" else "⚡ LIVE COINDCX FUTURES"
+        symbol = pos.get("symbol", "")
+        qty = pos.get("quantity", 0)
+        entry = pos.get("entry_price", 0)
+        margin = pos.get("cost_inr", 0)
+        leverage = pos.get("leverage", 2)
+        sl = pos.get("stop_loss_price", 0)
+        tp1 = pos.get("take_profit_1", 0)
+        tp2 = pos.get("take_profit_2", 0)
+        liq = pos.get("liquidation_price", 0)
+        thesis = pos.get("thesis", "Futures short breakdown")
+
+        msg = (
+            f"🔴 <b>FUTURES SHORT ORDER EXECUTED ({leverage}x LEVERAGE)</b>\n"
+            f"━━━━━━━━━━━━━━━━━━\n"
+            f"💼 <b>Mode:</b> {mode_label}\n"
+            f"🪙 <b>Asset:</b> #{symbol} / INR (Derivatives)\n"
+            f"📊 <b>Short Entry:</b> ₹{entry:,.2f}\n"
+            f"🔢 <b>Quantity:</b> {qty} {symbol}\n"
+            f"💵 <b>Margin Committed:</b> ₹{margin:,.2f} INR\n"
+            f"🛑 <b>Stop Loss (Risk Cap):</b> ₹{sl:,.2f} (+2.5%)\n"
+            f"🎯 <b>Take Profit 1 (Downside):</b> ₹{tp1:,.2f} (-4.0%)\n"
+            f"🎯 <b>Take Profit 2 (Downside):</b> ₹{tp2:,.2f} (-8.0%)\n"
+            f"⚠️ <b>Est. Liquidation Price:</b> ₹{liq:,.2f}\n"
+            f"🧠 <b>Thesis:</b> <i>{thesis}</i>\n"
+            f"⏱️ <i>{time.strftime('%Y-%m-%d %H:%M:%S')}</i>"
+        )
+
+        markup = self.create_inline_keyboard([
+            [
+                {"text": f"🟢 COVER / EXIT #{symbol} NOW", "callback_data": f"sell:{symbol}"},
+                {"text": "💼 Open Positions", "callback_data": "positions"}
+            ],
+            [
+                {"text": "⚡ Smart Radar", "callback_data": "radar"},
+                {"text": "❓ Help", "callback_data": "help"}
+            ]
+        ])
+        self.send_message(msg, reply_markup=markup)
+
     def send_sell_alert(self, trade: Dict[str, Any], total_equity: float, trading_mode: str = "paper"):
         """Send formatted Sell / PnL Report Alert with Opportunities and Status buttons."""
         pnl = trade.get("net_pnl_inr", 0)
@@ -334,15 +372,17 @@ class TelegramNotifier:
         reason = trade.get("exit_reason", "Target reached")
         fees = trade.get("fees_inr", 0)
         net_ret = trade.get("net_return_inr", 0)
+        side = trade.get("side", "BUY")
 
         emoji = "💰" if pnl >= 0 else "🛑"
         pnl_sign = "+" if pnl >= 0 else ""
         pnl_tag = "PROFIT" if pnl >= 0 else "LOSS"
+        side_tag = "SHORT COVERED" if side == "SHORT" else "POSITION CLOSED"
 
         msg = (
-            f"{emoji} <b>POSITION CLOSED ({pnl_tag})</b>\n"
+            f"{emoji} <b>{side_tag} ({pnl_tag})</b>\n"
             f"━━━━━━━━━━━━━━━━━━\n"
-            f"🪙 <b>Asset:</b> #{symbol} / INR\n"
+            f"🪙 <b>Asset:</b> #{symbol} / INR ({side})\n"
             f"🏁 <b>Exit Price:</b> ₹{exit_price:,.2f} (Entry: ₹{entry:,.2f})\n"
             f"📈 <b>Net Realized PnL:</b> <b>{pnl_sign}₹{pnl:,.2f} ({pnl_sign}{pnl_pct:,.2f}%)</b>\n"
             f"💵 <b>Net Return:</b> ₹{net_ret:,.2f} INR\n"
@@ -394,8 +434,8 @@ class TelegramNotifier:
         ])
         self.send_message(msg, reply_markup=markup)
 
-    def send_orderbook_watchout_alert(self, symbol: str, status: str, ask_pct: float, bid_pct: float, message: str):
-        """Send smart Buyer/Seller Orderbook Watchout alert with BUY / SELL buttons."""
+    def send_orderbook_watchout_alert(self, symbol: str, status: str, ask_pct: float, bid_pct: float, message: str, enable_futures: bool = False):
+        """Send smart Buyer/Seller Orderbook Watchout alert with BUY, SHORT (if enabled), or SELL buttons."""
         is_danger = "SELLER" in status.upper() or "OVERLAP" in status.upper()
         icon = "🚨" if is_danger else "🛡️"
         tag = "SELLER OVERLAPPING BUYER" if is_danger else "BUYER ABSORBING SELLER"
@@ -406,21 +446,19 @@ class TelegramNotifier:
             f"⚡ <b>Condition:</b> <b>{tag}</b>\n"
             f"📊 <b>Orderbook Depth:</b> {ask_pct:.0f}% Asks vs {bid_pct:.0f}% Bids\n"
             f"📉 <b>Dynamic:</b> <i>{message}</i>\n"
-            f"🎯 <b>Action:</b> {'Tighten trailing stops / avoid buying' if is_danger else 'Support holding firmly / bounce setup'}\n"
+            f"🎯 <b>Action:</b> {'Avoid spot buying / Open short if enabled' if is_danger else 'Support holding firmly / bounce setup'}\n"
             f"⏱️ <i>{time.strftime('%Y-%m-%d %H:%M:%S')}</i>"
         )
 
+        buttons = []
         if is_danger:
-            buttons = [
-                [
-                    {"text": f"🔴 SELL #{symbol} NOW", "callback_data": f"sell:{symbol}"},
-                    {"text": "🛑 Panic Sell All", "callback_data": "panic_liquidate"}
-                ],
-                [
-                    {"text": "🚨 All Depth Watchouts", "callback_data": "watchouts"},
-                    {"text": "❓ Help", "callback_data": "help"}
-                ]
-            ]
+            row1 = [{"text": f"🔴 SELL #{symbol}", "callback_data": f"sell:{symbol}"}]
+            if enable_futures:
+                row1.append({"text": f"⚡ OPEN SHORT #{symbol}", "callback_data": f"short:{symbol}"})
+            else:
+                row1.append({"text": "🛑 Panic Sell All", "callback_data": "panic_liquidate"})
+            buttons.append(row1)
+            buttons.append([{"text": "🚨 All Watchouts", "callback_data": "watchouts"}, {"text": "❓ Help", "callback_data": "help"}])
         else:
             buttons = [
                 [
@@ -428,7 +466,7 @@ class TelegramNotifier:
                     {"text": "🎯 Opportunities", "callback_data": "opportunities"}
                 ],
                 [
-                    {"text": "🚨 All Depth Watchouts", "callback_data": "watchouts"},
+                    {"text": "🚨 All Watchouts", "callback_data": "watchouts"},
                     {"text": "❓ Help", "callback_data": "help"}
                 ]
             ]
@@ -531,7 +569,7 @@ class TelegramNotifier:
                                     self._handle_callback(cb_data, chat_id, trading_engine)
                                     continue
 
-                                # 2. Check for Text Messages / Menu Button Taps
+                                # 2. Check for Text Messages / Slash Commands
                                 msg = update.get("message")
                                 if msg and "text" in msg:
                                     chat_id = str(msg["chat"]["id"])
@@ -563,8 +601,14 @@ class TelegramNotifier:
             self._execute_manual_buy(symbol, chat_id, engine)
             return
 
-        # Handle 1-tap Sell
-        if data.startswith("sell:"):
+        # Handle 1-tap Short
+        if data.startswith("short:"):
+            symbol = data.split(":", 1)[1].upper()
+            self._execute_manual_short(symbol, chat_id, engine)
+            return
+
+        # Handle 1-tap Sell / Cover
+        if data.startswith("sell:") or data.startswith("cover:"):
             symbol = data.split(":", 1)[1].upper()
             self._execute_manual_sell(symbol, chat_id, engine)
             return
@@ -646,8 +690,48 @@ class TelegramNotifier:
             ])
             self.send_message(f"❌ <b>BUY Order Failed:</b> {res.get('message')}", reply_markup=markup, chat_id=chat_id)
 
+    def _execute_manual_short(self, symbol: str, chat_id: str, engine):
+        """Helper to execute manual futures short from Telegram."""
+        if not getattr(engine, "enable_futures_shorting", False):
+            self.send_message(
+                f"⚠️ <b>Futures Short Selling is Disabled</b>\n\n"
+                f"Cannot short #{symbol}. Short selling utilizes margin leverage and is currently turned off to protect against market pumps.\n\n"
+                f"To enable it, open Web UI ⚙ <b>Config</b> and check <b>'Futures Short Selling'</b>.",
+                chat_id=chat_id
+            )
+            return
+
+        self.send_message(f"⏳ <i>Executing SHORT order for #{symbol} / INR on CoinDCX Derivatives ({engine.futures_leverage}x)...</i>", chat_id=chat_id)
+        res = engine.manual_short_symbol(symbol)
+        if res.get("success"):
+            markup = self.create_inline_keyboard([
+                [
+                    {"text": f"🟢 COVER #{symbol} NOW", "callback_data": f"sell:{symbol}"},
+                    {"text": "💼 View Positions", "callback_data": "positions"}
+                ],
+                [
+                    {"text": "📊 Status", "callback_data": "status"},
+                    {"text": "❓ Help", "callback_data": "help"}
+                ]
+            ])
+            self.send_message(
+                f"✅ <b>FUTURES SHORT EXECUTED!</b>\n"
+                f"🪙 <b>Coin:</b> #{symbol} / INR ({engine.futures_leverage}x)\n"
+                f"📊 <b>Short Price:</b> ₹{res.get('price', 0):,.2f}\n"
+                f"🛑 <b>Stop Loss (Cap):</b> ₹{res.get('stop_loss', 0):,.2f}\n"
+                f"🎯 <b>Downside Target:</b> ₹{res.get('take_profit', 0):,.2f}\n"
+                f"⚡ <i>Profits as price drops. Stop loss active.</i>",
+                reply_markup=markup,
+                chat_id=chat_id
+            )
+        else:
+            markup = self.create_inline_keyboard([
+                [{"text": "📊 Check Balance", "callback_data": "status"}, {"text": "❓ Help", "callback_data": "help"}]
+            ])
+            self.send_message(f"❌ <b>SHORT Order Failed:</b> {res.get('message')}", reply_markup=markup, chat_id=chat_id)
+
     def _execute_manual_sell(self, symbol: str, chat_id: str, engine):
-        """Helper to close position from Telegram and send confirmation."""
+        """Helper to close position (Sell spot or Cover short) from Telegram."""
         self.send_message(f"⏳ <i>Closing position for #{symbol} / INR...</i>", chat_id=chat_id)
         res = engine.manual_sell_symbol(symbol)
         if res.get("success"):
@@ -662,7 +746,7 @@ class TelegramNotifier:
                 ]
             ])
             self.send_message(
-                f"✅ <b>MANUAL EXIT COMPLETED!</b>\n"
+                f"✅ <b>POSITION CLOSED!</b>\n"
                 f"🪙 <b>Coin:</b> #{symbol} / INR\n"
                 f"🏁 <b>Exit Price:</b> ₹{res.get('price', 0):,.2f}\n"
                 f"💵 <i>Net proceeds returned safely to INR cash wallet.</i>",
@@ -673,42 +757,19 @@ class TelegramNotifier:
             markup = self.create_inline_keyboard([
                 [{"text": "💼 View Positions", "callback_data": "positions"}, {"text": "❓ Help", "callback_data": "help"}]
             ])
-            self.send_message(f"❌ <b>SELL Failed:</b> {res.get('message')}", reply_markup=markup, chat_id=chat_id)
+            self.send_message(f"❌ <b>EXIT Failed:</b> {res.get('message')}", reply_markup=markup, chat_id=chat_id)
 
     # ==========================================
     # COMMAND DISPATCHER
     # ==========================================
 
     def _handle_command(self, cmd_text: str, chat_id: str, engine):
-        """Handle individual commands and text menu button clicks."""
+        """Handle individual slash commands."""
         clean_text = cmd_text.strip()
         parts = clean_text.split()
         first_token = parts[0].lower() if parts else ""
 
-        # Map text menu taps to commands
-        menu_text_map = {
-            "📊 status": "/status",
-            "status": "/status",
-            "⚡ smart radar": "/radar",
-            "smart radar": "/radar",
-            "radar": "/radar",
-            "🎯 opportunities": "/opportunities",
-            "opportunities": "/opportunities",
-            "🚨 watchouts": "/watchouts",
-            "watchouts": "/watchouts",
-            "🔗 relations": "/relations",
-            "relations": "/relations",
-            "💼 positions": "/positions",
-            "positions": "/positions",
-            "🛑 panic sell": "/liquidate",
-            "panic sell": "/liquidate",
-            "liquidate": "/liquidate",
-            "❓ help": "/help",
-            "help": "/help",
-            "menu": "/help"
-        }
-
-        cmd = menu_text_map.get(clean_text.lower(), first_token)
+        cmd = first_token
 
         # ----------------------------------------------------
         # /buy <symbol> Command
@@ -726,17 +787,32 @@ class TelegramNotifier:
             return
 
         # ----------------------------------------------------
+        # /short <symbol> Command (Futures Short Selling)
+        # ----------------------------------------------------
+        if cmd in ["/short", "short"]:
+            if len(parts) < 2:
+                markup = self.create_inline_keyboard([
+                    [{"text": "⚡ Short BTC", "callback_data": "short:BTC"}, {"text": "⚡ Short SOL", "callback_data": "short:SOL"}],
+                    [{"text": "🎯 Opportunities", "callback_data": "opportunities"}, {"text": "❓ Help", "callback_data": "help"}]
+                ])
+                self.send_message("ℹ️ <b>Usage:</b> <code>/short &lt;symbol&gt;</code> (e.g. <code>/short BTC</code>). Requires Futures Short Selling enabled in Settings.", reply_markup=markup, chat_id=chat_id)
+                return
+            target_symbol = parts[1].upper()
+            self._execute_manual_short(target_symbol, chat_id, engine)
+            return
+
+        # ----------------------------------------------------
         # /sell <symbol> Command
         # ----------------------------------------------------
-        if cmd in ["/sell", "sell"]:
+        if cmd in ["/sell", "sell", "/cover", "cover"]:
             if len(parts) < 2:
                 if not engine.open_positions:
-                    self.send_message("💼 <b>No open positions to sell.</b> 100% in INR cash.", chat_id=chat_id)
+                    self.send_message("💼 <b>No open positions to close.</b> 100% in INR cash.", chat_id=chat_id)
                     return
-                # Build inline buttons for each open position
                 pos_buttons = []
                 for p in engine.open_positions:
-                    pos_buttons.append([{"text": f"🔴 SELL #{p['symbol']} (Entry ₹{p['entry_price']:,.0f})", "callback_data": f"sell:{p['symbol']}"}])
+                    side_label = "SHORT" if p.get("side") == "SHORT" else "BUY"
+                    pos_buttons.append([{"text": f"🔴 EXIT #{p['symbol']} ({side_label})", "callback_data": f"sell:{p['symbol']}"}])
                 pos_buttons.append([{"text": "🛑 Panic Sell All", "callback_data": "panic_liquidate"}])
                 self.send_message("🪙 <b>Select a position to close:</b>", reply_markup=self.create_inline_keyboard(pos_buttons), chat_id=chat_id)
                 return
@@ -748,19 +824,22 @@ class TelegramNotifier:
         # /start or /help
         # ----------------------------------------------------
         if cmd in ["/start", "/help"]:
+            futures_status = "✅ Active" if getattr(engine, "enable_futures_shorting", False) else "❌ Disabled (Spot Only)"
             reply = (
                 f"⚡ <b>NEXUS CRYPTO SURVIVAL AGENT</b> ⚡\n"
                 f"━━━━━━━━━━━━━━━━━━\n"
-                f"Autonomous CoinDCX Intelligence & Capital Defense.\n\n"
-                f"<b>Interactive Menu Options:</b>\n"
+                f"Autonomous CoinDCX Intelligence & Capital Defense.\n"
+                f"🛡️ <b>Futures Shorting:</b> {futures_status}\n\n"
+                f"<b>Core Bot Commands:</b>\n"
                 f"• <b>/status</b> - Balance, Equity, Health % & Net PnL\n"
-                f"• <b>/radar</b> - War news, social (X.com) & macro bias\n"
-                f"• <b>/opportunities</b> - Scanned setups with 1-tap Buy buttons\n"
+                f"• <b>/radar</b> - War news, social (X.com) & macro direction bias\n"
+                f"• <b>/opportunities</b> - Scanned trade setups with 1-tap buttons\n"
                 f"• <b>/watchouts</b> - Buyer vs Seller depth overlap warnings\n"
                 f"• <b>/relations</b> - Sympathy rally & BTC lag trades\n"
                 f"• <b>/positions</b> - Open positions & trailing stop guards\n"
-                f"• <b>/buy &lt;symbol&gt;</b> - Instant 1-tap buy (e.g. <code>/buy BTC</code>)\n"
+                f"• <b>/buy &lt;symbol&gt;</b> - Instant 1-tap Spot Buy (e.g. <code>/buy BTC</code>)\n"
                 f"• <b>/sell &lt;symbol&gt;</b> - Close position (e.g. <code>/sell BTC</code>)\n"
+                f"• <b>/short &lt;symbol&gt;</b> - Open Futures Short (e.g. <code>/short BTC</code>)\n"
                 f"• <b>/liquidate</b> - Emergency 100% exit to INR cash\n"
             )
             inline_buttons = self.create_inline_keyboard([
@@ -780,9 +859,9 @@ class TelegramNotifier:
                     {"text": "🛑 Panic Sell All", "callback_data": "panic_liquidate"}
                 ]
             ])
-            # Send with persistent reply keyboard attached so bottom buttons stay visible
+            # Send clean response with inline buttons and remove any old bottom keyboard
             self.send_message(reply, reply_markup=inline_buttons, chat_id=chat_id)
-            self.send_message("💡 <i>Use the buttons below or tap the '/' command menu anytime:</i>", reply_markup=self.get_main_menu_keyboard(), chat_id=chat_id)
+            self.send_message("💡 <i>Tap the native 'Menu' or '/' button anytime for commands.</i>", reply_markup=self.get_remove_keyboard(), chat_id=chat_id)
 
         # ----------------------------------------------------
         # /status
@@ -794,6 +873,7 @@ class TelegramNotifier:
             pnl_pct = (pnl / init) * 100.0
             health = engine.survival.calculate_health(eq)
             trades_count = len(engine.trade_history)
+            short_flag = "ON" if getattr(engine, "enable_futures_shorting", False) else "OFF"
 
             reply = (
                 f"📊 <b>AGENT PORTFOLIO STATUS</b>\n"
@@ -805,6 +885,7 @@ class TelegramNotifier:
                 f"💼 <b>Open Positions:</b> {len(engine.open_positions)}\n"
                 f"📜 <b>Total Trades:</b> {trades_count}\n"
                 f"🛡️ <b>Survival Stance:</b> {engine.latest_stance.get('label', 'PRUDENT')}\n"
+                f"⚡ <b>Futures Shorting:</b> {short_flag}\n"
                 f"⏱️ <i>{time.strftime('%Y-%m-%d %H:%M:%S')}</i>"
             )
             markup = self.create_inline_keyboard([
@@ -840,12 +921,15 @@ class TelegramNotifier:
                 pnl = p.get("unrealized_pnl_inr", 0)
                 pct = p.get("unrealized_pnl_pct", 0)
                 sym = p["symbol"]
+                side = p.get("side", "BUY")
+                side_icon = "🔴 SHORT" if side == "SHORT" else "🟢 LONG"
+
                 reply_lines.append(
-                    f"🪙 <b>#{sym}</b>: Qty {p['quantity']} | Entry ₹{p['entry_price']:,.2f}\n"
+                    f"{side_icon} <b>#{sym}</b>: Qty {p['quantity']} | Entry ₹{p['entry_price']:,.2f}\n"
                     f"  Current: ₹{p.get('current_price', p['entry_price']):,.2f} | Stop: ₹{p.get('trailing_stop_price', p['stop_loss_price']):,.2f}\n"
                     f"  PnL: <b>₹{pnl:+,.2f} ({pct:+.2f}%)</b>\n"
                 )
-                inline_rows.append([{"text": f"🔴 SELL #{sym} NOW", "callback_data": f"sell:{sym}"}])
+                inline_rows.append([{"text": f"🔴 EXIT #{sym} ({side})", "callback_data": f"sell:{sym}"}])
 
             inline_rows.append([
                 {"text": "🛑 Panic Close All", "callback_data": "panic_liquidate"},
@@ -859,7 +943,8 @@ class TelegramNotifier:
         # /opportunities
         # ----------------------------------------------------
         elif cmd in ["/opportunities", "/opps"]:
-            radar_data = engine.radar.build_radar_overview(force_refresh=True)
+            enable_short = getattr(engine, "enable_futures_shorting", False)
+            radar_data = engine.radar.build_radar_overview(force_refresh=True, enable_futures=enable_short)
             opps = radar_data.get("opportunities", [])
             if not opps:
                 markup = self.create_inline_keyboard([
@@ -875,17 +960,18 @@ class TelegramNotifier:
                 curr = o.get("current_price", 0)
                 tp = o.get("target_price", curr * 1.04)
                 sl = o.get("stop_loss_price", curr * 0.98)
-                gain = o.get("expected_return_pct", 4.0)
+                signal = o.get("signal", "BUY")
 
                 reply_lines.append(
-                    f"🚀 <b>#{sym}</b> [{o.get('category_label', 'OPPORTUNITY')}]\n"
-                    f"  Entry: ₹{curr:,.2f} -> Target: ₹{tp:,.2f} (+{gain:.1f}%)\n"
-                    f"  Stop: ₹{sl:,.2f} | Score: {o.get('composite_score', 80)}/100\n"
+                    f"{'🔴' if signal == 'SHORT' else '🚀'} <b>#{sym}</b> [{o.get('category_label', 'OPPORTUNITY')}]\n"
+                    f"  Entry: ₹{curr:,.2f} -> Target: ₹{tp:,.2f}\n"
+                    f"  Stop: ₹{sl:,.2f} | Score: {o.get('confidence', 80)}/100\n"
                     f"  <i>{o.get('headline')}</i>\n"
                 )
-                inline_rows.append([
-                    {"text": f"🟢 BUY #{sym} (Target ₹{tp:,.0f})", "callback_data": f"buy:{sym}"}
-                ])
+                if signal == "SHORT":
+                    inline_rows.append([{"text": f"🔴 SHORT #{sym} (Target ₹{tp:,.0f})", "callback_data": f"short:{sym}"}])
+                else:
+                    inline_rows.append([{"text": f"🟢 BUY #{sym} (Target ₹{tp:,.0f})", "callback_data": f"buy:{sym}"}])
 
             inline_rows.append([
                 {"text": "⚡ Smart Radar", "callback_data": "radar"},
@@ -897,7 +983,8 @@ class TelegramNotifier:
         # /watchouts
         # ----------------------------------------------------
         elif cmd in ["/watchouts", "/depth"]:
-            radar_data = engine.radar.build_radar_overview(force_refresh=True)
+            enable_short = getattr(engine, "enable_futures_shorting", False)
+            radar_data = engine.radar.build_radar_overview(force_refresh=True, enable_futures=enable_short)
             w_list = radar_data.get("orderbook_watchouts", [])
             reply_lines = ["🐋 <b>BUYER VS. SELLER ORDERBOOK DEPTH:</b>\n━━━━━━━━━━━━━━━━━━"]
             inline_rows = []
@@ -913,7 +1000,10 @@ class TelegramNotifier:
                 if ob["absorption_flag"]:
                     inline_rows.append([{"text": f"🟢 BUY DIP #{sym}", "callback_data": f"buy:{sym}"}])
                 elif ob["overlap_flag"]:
-                    inline_rows.append([{"text": f"🔴 SELL / EXIT #{sym}", "callback_data": f"sell:{sym}"}])
+                    if enable_short:
+                        inline_rows.append([{"text": f"🔴 SHORT #{sym}", "callback_data": f"short:{sym}"}])
+                    else:
+                        inline_rows.append([{"text": f"🔴 SELL / EXIT #{sym}", "callback_data": f"sell:{sym}"}])
 
             inline_rows.append([
                 {"text": "⚡ Refresh Watchouts", "callback_data": "watchouts"},
@@ -989,30 +1079,6 @@ class TelegramNotifier:
                 ]
             ])
             self.send_message(reply, reply_markup=markup, chat_id=chat_id)
-
-        # ----------------------------------------------------
-        # /scan
-        # ----------------------------------------------------
-        elif cmd in ["/scan", "/movers"]:
-            from core.market_scanner import MarketScanner
-            scanner = MarketScanner(engine.coindcx)
-            movers = scanner.scan_all_inr_markets(force_refresh=True)
-
-            reply_lines = [
-                f"🔥 <b>TOP COINDCX HIGH MOVERS SCANNED:</b>\n"
-                f"Scanned {movers['total_scanned']} INR pairs.\n━━━━━━━━━━━━━━━━━━"
-            ]
-            inline_rows = []
-            for g in movers["top_gainers"][:6]:
-                sym = g['symbol']
-                reply_lines.append(
-                    f"🚀 <b>#{sym}</b> ({g['name']}): <b>{g['change_24h']:+.2f}%</b> (₹{g['last_price']:,.4f})\n"
-                    f"  24h Vol: ₹{g['turnover_inr']:,.0f} INR | Spread: {g['spread_pct']}%\n"
-                )
-                inline_rows.append([{"text": f"🟢 BUY #{sym}", "callback_data": f"buy:{sym}"}])
-
-            inline_rows.append([{"text": "⚡ Smart Radar", "callback_data": "radar"}, {"text": "❓ Help", "callback_data": "help"}])
-            self.send_message("\n".join(reply_lines), reply_markup=self.create_inline_keyboard(inline_rows), chat_id=chat_id)
 
         # ----------------------------------------------------
         # /cycle

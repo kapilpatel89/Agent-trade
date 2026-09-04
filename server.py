@@ -40,6 +40,8 @@ class SettingsUpdate(BaseModel):
     cycle_interval: Optional[int] = None
     telegram_bot_token: Optional[str] = None
     telegram_chat_id: Optional[str] = None
+    enable_futures_shorting: Optional[bool] = None
+    futures_leverage: Optional[int] = None
     ai_provider: Optional[str] = None
     gemini_api_key: Optional[str] = None
     gemini_model: Optional[str] = None
@@ -60,17 +62,17 @@ class TelegramTestRequest(BaseModel):
     chat_id: Optional[str] = None
 
 class ManualTradeRequest(BaseModel):
-    market: str
-    pair: str
+    market: Optional[str] = ""
+    pair: Optional[str] = ""
     symbol: str
-    side: str  # "buy" or "sell"
+    side: str  # "buy", "sell", or "short"
     position_id: Optional[str] = None
 
 class OpportunityExecutionRequest(BaseModel):
     opportunity_id: str
 
 class RadarAlertTestRequest(BaseModel):
-    alert_type: str = "seller_overlap"  # "seller_overlap", "war_news", "correlation"
+    alert_type: str = "seller_overlap"  # "seller_overlap", "war_news", "correlation", "short_alert"
 
 # ==========================================
 # REST API ENDPOINTS
@@ -195,27 +197,42 @@ def get_market_movers(force_refresh: bool = False):
 @app.get("/api/radar/overview")
 def get_radar_overview(force_refresh: bool = False):
     """Get comprehensive Market Radar overview with orderbook depth, correlation, live sticks, and sentiment."""
-    return engine.radar.build_radar_overview(force_refresh=force_refresh)
+    enable_short = getattr(engine, "enable_futures_shorting", False)
+    return engine.radar.build_radar_overview(force_refresh=force_refresh, enable_futures=enable_short)
 
 @app.get("/api/radar/opportunities")
 def get_radar_opportunities(category: str = "all"):
     """
     Get categorized trade opportunities.
-    Filters: all | correlation | orderbook | news_social | momentum | live_sticks
+    Filters: all | correlation | orderbook | news_social | momentum | live_sticks | short_futures
     """
-    radar = engine.radar.build_radar_overview()
+    enable_short = getattr(engine, "enable_futures_shorting", False)
+    radar = engine.radar.build_radar_overview(enable_futures=enable_short)
     all_opps = radar.get("opportunities", [])
     if category == "all" or not category:
-        return {"category": "all", "total": len(all_opps), "opportunities": all_opps}
+        return {"category": "all", "total": len(all_opps), "opportunities": all_opps, "enable_futures_shorting": enable_short}
     
     filtered = [o for o in all_opps if o.get("category") == category]
-    return {"category": category, "total": len(filtered), "opportunities": filtered}
+    return {"category": category, "total": len(filtered), "opportunities": filtered, "enable_futures_shorting": enable_short}
 
 @app.post("/api/trades/execute-opportunity")
 def execute_opportunity(payload: OpportunityExecutionRequest):
     """1-Click execution for an opportunity identified by the Market Radar."""
     res = engine.execute_opportunity_trade(payload.opportunity_id)
     return res
+
+@app.post("/api/trades/manual")
+def execute_manual_trade(payload: ManualTradeRequest):
+    """Execute manual Buy, Sell, or Short order."""
+    side = payload.side.lower()
+    if side == "buy":
+        return engine.manual_buy_symbol(payload.symbol)
+    elif side in ["sell", "cover", "exit"]:
+        return engine.manual_sell_symbol(payload.symbol)
+    elif side == "short":
+        return engine.manual_short_symbol(payload.symbol)
+    else:
+        return {"success": False, "message": f"Unsupported trade side: {payload.side}"}
 
 @app.post("/api/radar/test-alert")
 def trigger_radar_test_alert(payload: Optional[RadarAlertTestRequest] = None):
@@ -277,6 +294,21 @@ def trigger_radar_test_alert(payload: Optional[RadarAlertTestRequest] = None):
             "exit_reason": "Take Profit 1 (+6.16%) Reached"
         }, engine.get_total_equity(), engine.trading_mode)
         return {"success": True, "message": "Triggered Telegram Sell Alert with interactive Opportunities and Status buttons"}
+
+    elif alert_type == "short_alert":
+        engine.telegram.send_short_alert({
+            "symbol": "ETH",
+            "quantity": 0.05,
+            "entry_price": 248000.0,
+            "cost_inr": 2480.0,
+            "leverage": getattr(engine, "futures_leverage", 2),
+            "stop_loss_price": 254200.0,
+            "take_profit_1": 238000.0,
+            "take_profit_2": 228000.0,
+            "liquidation_price": 360000.0,
+            "thesis": "Seller overlapping buyer with massive ask volume absorption breakdown."
+        }, engine.trading_mode)
+        return {"success": True, "message": "Triggered Telegram Futures Short Alert with interactive COVER, Positions, and Help buttons"}
 
     return {"success": False, "message": f"Unknown alert type: {alert_type}"}
 
@@ -375,6 +407,8 @@ def get_settings():
         "api_key_preview": f"{engine.coindcx.api_key[:4]}...{engine.coindcx.api_key[-4:]}" if engine.coindcx.api_key else "",
         "telegram_bot_token": engine.telegram.bot_token,
         "telegram_chat_id": engine.telegram.chat_id,
+        "enable_futures_shorting": getattr(engine, "enable_futures_shorting", False),
+        "futures_leverage": getattr(engine, "futures_leverage", config.FUTURES_DEFAULT_LEVERAGE),
         "ai_status": ai_status,
         "ai_provider": engine.brain.llm.provider,
         "gemini_api_key": engine.brain.llm.gemini_key,
@@ -401,6 +435,11 @@ def update_settings(settings: SettingsUpdate):
     if settings.telegram_chat_id is not None:
         engine.telegram.chat_id = settings.telegram_chat_id
         config.TELEGRAM_CHAT_ID = settings.telegram_chat_id
+    if settings.enable_futures_shorting is not None:
+        engine.enable_futures_shorting = bool(settings.enable_futures_shorting)
+        config.ENABLE_FUTURES_SHORTING = bool(settings.enable_futures_shorting)
+    if settings.futures_leverage is not None:
+        engine.futures_leverage = max(1, min(config.FUTURES_MAX_LEVERAGE, int(settings.futures_leverage)))
 
     # Update Real AI Provider & Keys
     engine.brain.llm.update_credentials(

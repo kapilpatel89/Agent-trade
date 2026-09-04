@@ -206,6 +206,7 @@
           <button class="filter-chip" data-category="news_social">🌍 News & Social (X.com)</button>
           <button class="filter-chip" data-category="momentum">⚡ Breakout Momentum</button>
           <button class="filter-chip" data-category="live_sticks">🕯️ Live Stick Reversal</button>
+          <button class="filter-chip filter-chip-short" id="filter-chip-short" data-category="short_futures" style="display:none;">🔴 Short Setups (Futures)</button>
         </div>
       </div>
       <div class="opportunities-grid" id="opportunities-grid">
@@ -432,6 +433,62 @@
           <input type="password" id="cfg-api-secret" placeholder="CoinDCX API Secret" class="input-field">
         </div>
 
+        <!-- Futures Short Selling Toggle & Risk Warning -->
+        <div class="form-section-label" style="margin-top:20px;">⚡ DERIVATIVES & FUTURES SHORT SELLING</div>
+        <div class="futures-toggle-container">
+          <div class="futures-checkbox-row">
+            <label class="custom-toggle-switch">
+              <input type="checkbox" id="cfg-enable-futures">
+              <span class="toggle-slider"></span>
+            </label>
+            <div class="futures-checkbox-label">
+              <strong>Enable Futures Short Selling</strong>
+              <span>Allows the AI agent to profit from falling markets by opening short positions.</span>
+            </div>
+          </div>
+
+          <!-- Prominent High Risk Warning directly near the check button -->
+          <div class="risk-warning-box">
+            <div class="risk-warning-header">
+              <span class="rwb-icon">⚠️</span>
+              <span class="rwb-title">HIGH RISK WARNING (LEVERAGE & LIQUIDATION)</span>
+            </div>
+            <div class="risk-warning-body">
+              Unlike Spot trading (where liquidation risk is <strong>0%</strong> and assets can be held indefinitely), short selling uses borrowed margin and leverage (2x-5x). If a coin spikes sharply upward, the position can incur heavy losses or face liquidation. Default is <strong>UNCHECKED / DISABLED</strong> for maximum safety. Only enable if you accept derivative leverage risks.
+            </div>
+          </div>
+
+          <!-- Conditional Options Panel: Shown ONLY when Futures Short Selling is enabled -->
+          <div id="futures-options-panel" class="futures-options-panel" style="display:none;">
+            <div class="f-panel-title">⚙️ Futures Execution Parameters:</div>
+            <div class="futures-opt-grid">
+              <div class="f-opt-card">
+                <span class="f-opt-name">Futures Leverage</span>
+                <div class="leverage-btn-group" id="leverage-selector">
+                  <button type="button" class="btn-lev active" data-lev="2">2x</button>
+                  <button type="button" class="btn-lev" data-lev="3">3x</button>
+                  <button type="button" class="btn-lev" data-lev="5">5x</button>
+                </div>
+                <input type="hidden" id="cfg-futures-leverage" value="2">
+                <span class="f-opt-hint">Low leverage prevents liquidation</span>
+              </div>
+              <div class="f-opt-card">
+                <span class="f-opt-name">Max Short Allocation</span>
+                <span class="f-opt-value">15% Max Cash</span>
+                <span class="f-opt-hint">Max ₹150 margin on ₹1,000 wallet</span>
+              </div>
+              <div class="f-opt-card">
+                <span class="f-opt-name">Hard Stop Loss</span>
+                <span class="f-opt-value text-danger">+2.5% Price Cap</span>
+                <span class="f-opt-hint">Closes short immediately on +2.5% pump</span>
+              </div>
+            </div>
+            <div class="f-safety-pill">
+              🛡️ <strong>Liquidation Buffer:</strong> With 2x leverage, liquidation occurs only at +45% pump, far above the +2.5% automatic stop loss guard.
+            </div>
+          </div>
+        </div>
+
         <!-- Telegram -->
         <div class="form-section-label" style="margin-top:20px;">🤖 TELEGRAM ALERTS</div>
         <input type="hidden" id="cfg-telegram-token" value="8249092590:AAH66Fgi5Q8s9B09NH5DQxfJ3vE9-QwJgcI">
@@ -533,6 +590,7 @@
             <button class="btn btn-xs btn-outline" id="btn-trigger-corr-alert">🔗 Correlation (with 1-Tap Buy)</button>
             <button class="btn btn-xs btn-outline" id="btn-trigger-buy-buttons-alert">🟢 Buy Alert (with Sell/Help)</button>
             <button class="btn btn-xs btn-outline" id="btn-trigger-sell-buttons-alert">🔴 Sell Alert (with Opps/Status)</button>
+            <button class="btn btn-xs btn-outline" id="btn-trigger-short-buttons-alert">⚡ Futures Short (with Cover/Help)</button>
           </div>
           <div id="radar-alert-feedback" class="hint-text" style="margin-top:8px;"></div>
         </div>

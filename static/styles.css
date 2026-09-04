@@ -1096,7 +1096,8 @@ body {
 .opp-filter-tabs {
   display: flex;
   gap: 8px;
-  overflow-x: auto;
+  flex-wrap: wrap;
+  align-items: center;
   padding-bottom: 2px;
 }
 .filter-chip {
@@ -1396,4 +1397,260 @@ body {
   gap: 10px;
   flex-wrap: wrap;
 }
+
+/* ========================================================
+   FUTURES SHORT SELLING & RISK SYSTEM STYLES
+   ======================================================== */
+.futures-toggle-container {
+  background: rgba(255, 51, 102, 0.04);
+  border: 1px solid rgba(255, 51, 102, 0.25);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-top: 6px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 0.3s ease;
+}
+
+.futures-checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+/* Modern iOS / Nexus Style Switch */
+.custom-toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+.custom-toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(255, 255, 255, 0.15);
+  transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 24px;
+  border: 1px solid var(--border);
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #fff;
+  transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+}
+
+.custom-toggle-switch input:checked + .toggle-slider {
+  background-color: var(--red);
+  box-shadow: 0 0 12px rgba(255, 51, 102, 0.4);
+  border-color: var(--red);
+}
+
+.custom-toggle-switch input:checked + .toggle-slider:before {
+  transform: translateX(20px);
+  background-color: #fff;
+}
+
+.futures-checkbox-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.futures-checkbox-label strong {
+  font-size: 13px;
+  color: #fff;
+}
+
+.futures-checkbox-label span {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* High Risk Warning Box directly near check button */
+.risk-warning-box {
+  background: rgba(255, 51, 102, 0.08);
+  border: 1px solid rgba(255, 51, 102, 0.35);
+  border-left: 4px solid var(--red);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.risk-warning-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.rwb-icon {
+  font-size: 14px;
+}
+
+.rwb-title {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #ff5277;
+}
+
+.risk-warning-body {
+  font-size: 11px;
+  color: #e2c0c8;
+  line-height: 1.45;
+}
+
+.risk-warning-body strong {
+  color: #fff;
+}
+
+/* Conditional Futures Options Panel */
+.futures-options-panel {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 12px;
+  animation: fadeInDown 0.3s ease;
+}
+
+.f-panel-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--cyan);
+  margin-bottom: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.futures-opt-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.f-opt-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.f-opt-name {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.f-opt-value {
+  font-size: 13px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: #fff;
+}
+
+.f-opt-hint {
+  font-size: 9px;
+  color: var(--text-dim);
+}
+
+.leverage-btn-group {
+  display: flex;
+  gap: 4px;
+}
+
+.btn-lev {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-lev:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.btn-lev.active {
+  background: var(--red);
+  color: #fff;
+  border-color: var(--red);
+  box-shadow: 0 0 8px rgba(255, 51, 102, 0.4);
+}
+
+.f-safety-pill {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  background: rgba(0, 245, 155, 0.06);
+  border: 1px solid rgba(0, 245, 155, 0.2);
+  border-radius: 6px;
+  padding: 6px 10px;
+  line-height: 1.4;
+}
+
+.f-safety-pill strong {
+  color: var(--green);
+}
+
+.filter-chip-short {
+  border-color: rgba(255, 51, 102, 0.4) !important;
+  color: #ff5277 !important;
+}
+
+.filter-chip-short.active {
+  background: rgba(255, 51, 102, 0.25) !important;
+  border-color: var(--red) !important;
+  box-shadow: 0 0 10px rgba(255, 51, 102, 0.3) !important;
+}
+
+.opportunity-card-short {
+  border-color: rgba(255, 51, 102, 0.25) !important;
+}
+.opportunity-card-short:hover {
+  border-color: rgba(255, 51, 102, 0.5) !important;
+  box-shadow: 0 4px 24px rgba(255, 51, 102, 0.15);
+}
+
+.btn-execute-short {
+  background: rgba(255, 51, 102, 0.15) !important;
+  color: #ff5277 !important;
+  border-color: rgba(255, 51, 102, 0.4) !important;
+}
+.btn-execute-short:hover {
+  background: var(--red) !important;
+  color: #fff !important;
+  box-shadow: 0 0 12px rgba(255, 51, 102, 0.4) !important;
+}
+
 
