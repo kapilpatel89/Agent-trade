@@ -35,6 +35,8 @@ document.addEventListener("DOMContentLoaded", () => {
   bootDashboard();
   // Live price tick every 800ms (fast)
   setInterval(tickLivePrices, 800);
+  // Active Positions fast real-time poll every 1s (live PnL & trailing stop update)
+  setInterval(fetchPositions, 1000);
   // Full dashboard every 4s
   setInterval(fullPoll, 4000);
   // Thoughts every 3s
@@ -458,7 +460,7 @@ async function fetchNews(force = false) {
 }
 
 // --------------------------------------------------------------------------
-// POSITIONS
+// POSITIONS (REAL-TIME 1-SECOND FAST REFRESH)
 // --------------------------------------------------------------------------
 async function fetchPositions() {
   try {
@@ -466,37 +468,68 @@ async function fetchPositions() {
     const d = await r.json();
     const positions = d.positions || [];
     const badge = document.getElementById("open-positions-count-badge");
-    badge.textContent = `${positions.length} Open`;
+    if (badge) badge.textContent = `${positions.length} Open`;
 
     const tbody = document.getElementById("positions-table-body");
+    if (!tbody) return;
     if (!positions.length) {
       tbody.innerHTML = `<tr><td colspan="9" class="empty-row">No active positions. Capital held in INR.</td></tr>`;
       return;
     }
-    tbody.innerHTML = "";
-    positions.forEach(p => {
+
+    tbody.innerHTML = positions.map(p => {
       const pnlSign  = p.unrealized_pnl_inr >= 0 ? "+" : "";
       const pnlClass = p.unrealized_pnl_inr >= 0 ? "positive" : "negative";
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td><strong>${p.symbol}</strong></td>
-        <td><span class="stance-badge-large stance-expansion" style="padding:2px 6px;font-size:9px">${p.side}</span></td>
-        <td>${p.quantity}</td>
-        <td>₹${p.entry_price.toLocaleString("en-IN")}</td>
-        <td>₹${p.current_price.toLocaleString("en-IN")}</td>
-        <td>₹${p.trailing_stop_price || p.stop_loss_price}</td>
-        <td>₹${p.take_profit_1} / ₹${p.take_profit_2}</td>
-        <td class="${pnlClass}">${pnlSign}₹${p.unrealized_pnl_inr.toFixed(2)} (${pnlSign}${p.unrealized_pnl_pct.toFixed(2)}%)</td>
-        <td><button class="btn btn-xs btn-danger" onclick="closePosition('${p.id}')">Close</button></td>
+      const isShort  = p.side === "SHORT";
+      const sideBadge = isShort 
+        ? `<span class="stance-badge-large stance-danger" style="padding:2px 8px;font-size:10px;font-weight:700;background:rgba(255,51,102,0.2);color:#ff3366;border:1px solid rgba(255,51,102,0.4);">🔴 SHORT ${p.leverage ? p.leverage+'x' : ''}</span>`
+        : `<span class="stance-badge-large stance-expansion" style="padding:2px 8px;font-size:10px;font-weight:700;background:rgba(0,245,155,0.15);color:#00f59b;border:1px solid rgba(0,245,155,0.35);">🟢 LONG</span>`;
+
+      const curPrice   = parseFloat(p.current_price || p.entry_price || 0);
+      const entryPrice = parseFloat(p.entry_price || 0);
+      const stopPrice  = parseFloat(p.trailing_stop_price || p.stop_loss_price || 0);
+      const tp1        = parseFloat(p.take_profit_1 || 0);
+      const tp2        = parseFloat(p.take_profit_2 || 0);
+
+      const isTrailingActive = Boolean(p.tp1_reached || (isShort ? stopPrice < entryPrice : stopPrice > entryPrice));
+      const stopHtml = isTrailingActive
+        ? `<span style="color:var(--green);font-weight:700;" title="Active Trailing Stop Locking In Profit">🛡️ ₹${stopPrice.toLocaleString("en-IN", {maximumFractionDigits: 2})}</span>`
+        : `<span style="font-family:var(--font-mono);">₹${stopPrice.toLocaleString("en-IN", {maximumFractionDigits: 2})}</span>`;
+
+      return `
+        <tr>
+          <td><strong>#${p.symbol}</strong></td>
+          <td>${sideBadge}</td>
+          <td style="font-family:var(--font-mono);">${p.quantity}</td>
+          <td style="font-family:var(--font-mono);">₹${entryPrice.toLocaleString("en-IN", {maximumFractionDigits: 2})}</td>
+          <td style="font-family:var(--font-mono);font-weight:700;color:#fff;">₹${curPrice.toLocaleString("en-IN", {maximumFractionDigits: 2})}</td>
+          <td>${stopHtml}</td>
+          <td style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted);">₹${tp1.toLocaleString("en-IN", {maximumFractionDigits: 0})} / ₹${tp2.toLocaleString("en-IN", {maximumFractionDigits: 0})}</td>
+          <td class="${pnlClass}" style="font-family:var(--font-mono);font-weight:700;">${pnlSign}₹${p.unrealized_pnl_inr.toFixed(2)} (${pnlSign}${p.unrealized_pnl_pct.toFixed(2)}%)</td>
+          <td><button class="btn btn-xs btn-danger" onclick="closePosition('${p.symbol}')">${isShort ? 'Cover' : 'Close'}</button></td>
+        </tr>
       `;
-      tbody.appendChild(tr);
-    });
+    }).join("");
   } catch(e) { /* ignore */ }
 }
 
-async function closePosition(id) {
-  if (confirm("Close this position at market price?")) {
-    await fetch(`${API}/api/control/emergency-liquidate`, { method:"POST" });
+async function closePosition(symbol) {
+  if (confirm(`Close position for #${symbol} at live market price?`)) {
+    try {
+      const r = await fetch(`${API}/api/trades/manual`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ symbol: symbol, side: "sell" })
+      });
+      const d = await r.json();
+      if (d.success) {
+        showNotification(`✅ ${d.message}`, "success");
+      } else {
+        showNotification(`❌ ${d.message}`, "error");
+      }
+    } catch(e) {
+      showNotification("❌ Error closing position", "error");
+    }
     fetchPositions();
     fullPoll();
   }
@@ -746,6 +779,8 @@ function wireEvents() {
   // Refresh buttons
   document.getElementById("btn-refresh-news").onclick   = () => fetchNews(true);
   document.getElementById("btn-refresh-movers").onclick = () => fetchMovers(true);
+  const btnRefreshPos = document.getElementById("btn-refresh-positions");
+  if (btnRefreshPos) btnRefreshPos.onclick = () => fetchPositions();
 
   // Telegram detect
   document.getElementById("btn-detect-telegram").onclick = detectTelegramChat;

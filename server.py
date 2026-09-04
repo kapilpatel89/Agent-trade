@@ -153,8 +153,20 @@ def get_thoughts(limit: int = 50):
 
 @app.get("/api/positions")
 def get_positions():
-    """Get all active open positions."""
-    return {"positions": engine.open_positions, "total_equity": engine.get_total_equity()}
+    """Get all active open positions with real-time live price and trailing stop recalculation."""
+    if engine.open_positions:
+        try:
+            tickers = engine.coindcx.get_tickers()
+            prices = {t["market"]: float(t.get("last_price", 0) or 0) for t in tickers if "market" in t}
+            stance_info = engine.latest_stance or {"trailing_stop_pct": 0.015}
+            engine.manage_open_positions(prices, stance_info)
+        except Exception:
+            pass
+    return {
+        "positions": engine.open_positions,
+        "total_equity": engine.get_total_equity(),
+        "timestamp": time.strftime("%H:%M:%S")
+    }
 
 @app.get("/api/trades")
 def get_trades(limit: int = 50):

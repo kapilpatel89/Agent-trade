@@ -344,8 +344,12 @@
       <!-- Positions -->
       <div class="positions-card glass-card">
         <div class="card-title-bar">
-          <h3>💼 ACTIVE POSITIONS</h3>
-          <span class="count-pill" id="open-positions-count-badge">0 Open</span>
+          <div class="title-with-badge">
+            <h3>💼 ACTIVE POSITIONS</h3>
+            <span class="pulse-tag"><span class="radar-live-dot"></span> LIVE 1S</span>
+            <span class="count-pill" id="open-positions-count-badge">0 Open</span>
+          </div>
+          <button id="btn-refresh-positions" class="btn btn-xs btn-outline">↺ Refresh</button>
         </div>
         <div class="table-wrap">
           <table class="data-table">

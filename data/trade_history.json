@@ -1,5 +1,30 @@
 [
   {
+    "id": "9c0abd3c",
+    "market": "PORTALINR",
+    "pair": "I-PORTAL_INR",
+    "symbol": "PORTAL",
+    "quantity": 87.6,
+    "entry_price": 1.666,
+    "exit_price": 1.7295,
+    "cost_inr": 145.94,
+    "gross_return_inr": 151.5,
+    "net_return_inr": 149.63,
+    "net_pnl_inr": 3.69,
+    "net_pnl_pct": 2.53,
+    "fees_inr": 2.21,
+    "fee_breakdown": {
+      "buy_fee_with_gst": 0.34,
+      "sell_fee_with_gst": 0.35,
+      "tds_1pct_deducted": 1.52,
+      "total_friction": 2.21
+    },
+    "opened_at": "2026-09-04 19:54:50",
+    "closed_at": "2026-09-04 21:20:11",
+    "exit_reason": "Trailing Stop Triggered (Profit Guard)",
+    "thesis": "Trend-following entry: Price structured above EMA 9/21 with positive MACD momentum and EMA Trend Alignment confirmation."
+  },
+  {
     "id": "8c77ee6e",
     "market": "XRPINR",
     "pair": "I-XRP_INR",
